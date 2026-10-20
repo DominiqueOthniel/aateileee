@@ -1,0 +1,276 @@
+[build]
+  publish = "."
+  command = "echo Static shop clone ready"
+
+# Optional: set AA_ADMIN_PASSWORD in Netlify UI (Site settings → Environment variables)
+# to override the temporary default baked into netlify/functions/analytics.mjs
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Admin + analytics API must win over the SPA catch-all below
+[[redirects]]
+  from = "/api/analytics"
+  to = "/.netlify/functions/analytics"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/settings"
+  to = "/.netlify/functions/settings"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/"
+  to = "/admin/index.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/widgets/checkout/info"
+  to = "/stubs/widgets/checkout/info.html"
+  status = 200
+
+# Vehicle finder API (Shopware aateile vehicle-selector plugin)
+[[redirects]]
+  from = "/vehicles/brands/:brand/models"
+  to = "/stubs/vehicles/brands/:brand/models.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vehicles/models/:model/types"
+  to = "/stubs/vehicles/models/:model/types.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vehicles/brands"
+  to = "/stubs/vehicles/brands.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vehicles/models"
+  to = "/stubs/vehicles/models.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vehicles/engines"
+  to = "/stubs/vehicles/engines.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vehicle/filter"
+  to = "/find-parts"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/:lang/vehicle/filter"
+  to = "/find-parts"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/customer/vehicle"
+  to = "/stubs/customer/vehicle.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/autoexpert/aesession"
+  to = "/stubs/autoexpert/aesession.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cookie/offcanvas"
+  to = "/stubs/cookie/offcanvas.html"
+  status = 200
+
+[[redirects]]
+  from = "/cookie/groups"
+  to = "/stubs/cookie/groups.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/cookie/consent-offcanvas"
+  to = "/stubs/cookie/consent-offcanvas.html"
+  status = 200
+
+[[redirects]]
+  from = "/car-parts"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/car-parts/*"
+  to = "/app.html"
+  status = 200
+
+
+[[redirects]]
+  from = "/checkout/offcanvas"
+  to = "/stubs/checkout/offcanvas.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/checkout/line-item/*"
+  to = "/stubs/checkout/line-item-add.json"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/checkout"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/checkout/*"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/cart"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/account"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/account/*"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/wishlist"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/search"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/find-parts"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/fr"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/fr/"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/de"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/de/"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact-us"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/delivery"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/payment-methods"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy-policy"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms-conditions"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/right-of-withdrawal"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/cookie-settings"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/beware-of-fraud"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/information-on-the-disposal-of-used-oil"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/:brand/:sku"
+  to = "/app.html"
+  status = 200
+  force = false
+
+
+[[redirects]]
+  from = "/spares"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/spare-parts"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/pieces"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/app.html"
+  status = 200
+
+
+[[redirects]]
+  from = "/README.md"
+  to = "/"
+  status = 302
+
+[[redirects]]
+  from = "/readme.md"
+  to = "/"
+  status = 302

@@ -1,0 +1,35 @@
+/stubs/vehicles/brands.json
+  Content-Type: application/json
+
+/stubs/customer/vehicle.json
+  Content-Type: application/json
+
+/stubs/autoexpert/aesession.json
+  Content-Type: application/json
+
+/stubs/cookie/groups.json
+  Content-Type: application/json
+
+/stubs/vehicles/models.json
+  Content-Type: application/json
+
+/stubs/vehicles/engines.json
+  Content-Type: application/json
+
+/data/catalog.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/fitment.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/shop-app.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/cart-ui.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/data/spares-categories.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=0, must-revalidate
