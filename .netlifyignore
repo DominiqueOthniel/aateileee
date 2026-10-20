@@ -1,0 +1,9 @@
+media/s3/
+.git/
+.tmp/
+tmp/
+/tmp/
+node_modules/
+*.log
+scripts/__pycache__/
+.cursor/

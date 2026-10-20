@@ -139,63 +139,98 @@ def download_one(url: str) -> tuple[str, str, str | None]:
     return url, "fail", last_err
 
 
-def rewrite_url_in_obj(obj, mapping: dict[str, str]) -> int:
-    """Replace remote image strings in nested JSON; return change count."""
+def rewrite_url_in_obj(obj, mapping: dict[str, str], force: bool = True) -> int:
+    """Replace remote aateile image strings with same-origin /media paths.
+
+    When force=True (default), rewrite even if the local file is not on disk yet
+    so catalog JSON never embeds aateile.com / aateile.s3 hosts.
+    """
     n = 0
     if isinstance(obj, dict):
         for k, v in list(obj.items()):
             if isinstance(v, str) and v.startswith("http") and ("aateile.com" in v or "aateile.s3" in v):
                 key = strip_qs(v)
                 local = mapping.get(key) or remote_to_local(v)
-                if local and local_fs_path(local).exists():
-                    # Keep original remote under imageRemote when rewriting image
-                    if k == "image" and not obj.get("imageRemote"):
-                        obj["imageRemote"] = v
-                    obj[k] = local
-                    if k == "image":
+                if local and (force or local_fs_path(local).exists()):
+                    # Do not keep hotlinkable remotes in served catalog fields
+                    if k == "imageRemote":
+                        obj[k] = local if local_fs_path(local).exists() else ""
+                    else:
+                        obj[k] = local
+                    if k in ("image", "imageLocal"):
                         obj["imageLocal"] = local
                     n += 1
+                elif k == "imageRemote":
+                    obj[k] = ""
+                    n += 1
             else:
-                n += rewrite_url_in_obj(v, mapping)
+                n += rewrite_url_in_obj(v, mapping, force=force)
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
             if isinstance(v, str) and v.startswith("http") and ("aateile.com" in v or "aateile.s3" in v):
                 key = strip_qs(v)
                 local = mapping.get(key) or remote_to_local(v)
-                if local and local_fs_path(local).exists():
+                if local and (force or local_fs_path(local).exists()):
                     obj[i] = local
                     n += 1
+                else:
+                    obj[i] = ""
+                    n += 1
             else:
-                n += rewrite_url_in_obj(v, mapping)
+                n += rewrite_url_in_obj(v, mapping, force=force)
     return n
 
 
 def rewrite_catalog_files(downloaded_map: dict[str, str]):
-    """Rewrite catalog + spares to local paths for files that exist on disk."""
+    """Rewrite catalog + spares to local /media paths (no aateile hosts left)."""
     log("Rewriting catalog.json image fields…")
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-    n = rewrite_url_in_obj(catalog, downloaded_map)
-    # Also: for any product still on remote, if local file exists via mapping, rewrite
+    n = rewrite_url_in_obj(catalog, downloaded_map, force=True)
     for p in catalog.get("products") or []:
+        if not isinstance(p, dict):
+            continue
         for key in ("image", "imageRemote", "imageLocal"):
             u = p.get(key)
-            if not isinstance(u, str):
+            if not isinstance(u, str) or not u:
                 continue
-            local = remote_to_local(u) if u.startswith("http") else (u if u.startswith("/media/") else None)
-            if local and local_fs_path(local).exists():
-                if key == "image" and u.startswith("http") and not p.get("imageRemote"):
-                    p["imageRemote"] = u
-                if p.get(key) != local:
-                    p[key] = local
-                    n += 1
-                if key == "image":
+            if u.startswith("http") and ("aateile.com" in u or "aateile.s3" in u):
+                local = remote_to_local(u) or ""
+                p[key] = local
+                if key == "image" and local:
                     p["imageLocal"] = local
+                n += 1
+            elif key == "imageRemote" and ("aateile.com" in u or "aateile.s3" in u):
+                p[key] = ""
+                n += 1
+        # Prefer local path on primary image fields
+        loc = p.get("imageLocal") or ""
+        if isinstance(loc, str) and loc.startswith("/media/"):
+            if p.get("image") != loc:
+                p["image"] = loc
+                n += 1
+        # Drop leftover remote hotlinks
+        ir = p.get("imageRemote")
+        if isinstance(ir, str) and ("aateile.com" in ir or "aateile.s3" in ir):
+            p["imageRemote"] = ""
+            n += 1
+        imgs = p.get("images")
+        if isinstance(imgs, list):
+            new_imgs = []
+            for u in imgs:
+                if isinstance(u, str) and u.startswith("http") and ("aateile.com" in u or "aateile.s3" in u):
+                    local = remote_to_local(u)
+                    if local:
+                        new_imgs.append(local)
+                        n += 1
+                elif isinstance(u, str) and u:
+                    new_imgs.append(u)
+            p["images"] = new_imgs
     CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     log(f"catalog rewrites≈{n}")
 
     if SPARES.exists():
         spares = json.loads(SPARES.read_text(encoding="utf-8"))
-        n2 = rewrite_url_in_obj(spares, downloaded_map)
+        n2 = rewrite_url_in_obj(spares, downloaded_map, force=True)
         SPARES.write_text(json.dumps(spares, ensure_ascii=False, indent=2), encoding="utf-8")
         log(f"spares-categories rewrites≈{n2}")
 
