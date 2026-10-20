@@ -35,8 +35,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/8d/4c/e7/1769591112/Detailing_Auto.png?ts=1781902737",
-      "imageLocal": "/media/category-covers/Detailing_Auto.png"
+      "image": "/media/8d/4c/e7/1769591112/Detailing_Auto.png",
+      "imageLocal": "/media/8d/4c/e7/1769591112/Detailing_Auto.png",
+      "imageRemote": "/media/8d/4c/e7/1769591112/Detailing_Auto.png"
     },
     {
       "name": "Oils and fluids",
@@ -129,8 +130,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ba/0b/3d/1758902797/Oils and fluids.png?ts=1760367811",
-      "imageLocal": "/media/category-covers/Oils_and_fluids.png"
+      "image": "/media/ba/0b/3d/1758902797/Oils and fluids.png",
+      "imageLocal": "/media/ba/0b/3d/1758902797/Oils and fluids.png",
+      "imageRemote": "/media/ba/0b/3d/1758902797/Oils and fluids.png"
     },
     {
       "name": "Brakes",
@@ -387,8 +389,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/a5/ff/04/1758902837/Brakes.png?ts=1760367811",
-      "imageLocal": "/media/category-covers/Brakes.png"
+      "image": "/media/a5/ff/04/1758902837/Brakes.png",
+      "imageLocal": "/media/a5/ff/04/1758902837/Brakes.png",
+      "imageRemote": "/media/a5/ff/04/1758902837/Brakes.png"
     },
     {
       "name": "Filters",
@@ -469,8 +472,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/26/1f/cf/1758902858/Filters.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Filters.png"
+      "image": "/media/26/1f/cf/1758902858/Filters.png",
+      "imageLocal": "/media/26/1f/cf/1758902858/Filters.png",
+      "imageRemote": "/media/26/1f/cf/1758902858/Filters.png"
     },
     {
       "name": "Engine",
@@ -1029,8 +1033,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/c8/1e/ff/1758902872/Engine.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Engine.png"
+      "image": "/media/c8/1e/ff/1758902872/Engine.png",
+      "imageLocal": "/media/c8/1e/ff/1758902872/Engine.png",
+      "imageRemote": "/media/c8/1e/ff/1758902872/Engine.png"
     },
     {
       "name": "Wiper and washer system",
@@ -1111,8 +1116,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/17/68/50/1760367802/Wiper - washer system.png?ts=1760367802",
-      "imageLocal": "/media/category-covers/Wiper_-_washer_system.png"
+      "image": "/media/17/68/50/1760367802/Wiper - washer system.png",
+      "imageLocal": "/media/17/68/50/1760367802/Wiper - washer system.png",
+      "imageRemote": "/media/17/68/50/1760367802/Wiper - washer system.png"
     },
     {
       "name": "Ignition and preheating",
@@ -1189,8 +1195,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/76/6b/f2/1760367801/Ignition - preheating.png?ts=1760367801",
-      "imageLocal": "/media/category-covers/Ignition_-_preheating.png"
+      "image": "/media/76/6b/f2/1760367801/Ignition - preheating.png",
+      "imageLocal": "/media/76/6b/f2/1760367801/Ignition - preheating.png",
+      "imageRemote": "/media/76/6b/f2/1760367801/Ignition - preheating.png"
     },
     {
       "name": "Suspension",
@@ -1375,8 +1382,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/39/5f/cc/1758903101/Suspension.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Suspension.png"
+      "image": "/media/39/5f/cc/1758903101/Suspension.png",
+      "imageLocal": "/media/39/5f/cc/1758903101/Suspension.png",
+      "imageRemote": "/media/39/5f/cc/1758903101/Suspension.png"
     },
     {
       "name": "Electrics",
@@ -1769,8 +1777,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/1d/02/83/1758903120/Electrics.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Electrics.png"
+      "image": "/media/1d/02/83/1758903120/Electrics.png",
+      "imageLocal": "/media/1d/02/83/1758903120/Electrics.png",
+      "imageRemote": "/media/1d/02/83/1758903120/Electrics.png"
     },
     {
       "name": "Damping",
@@ -1827,8 +1836,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/08/01/dc/1758903135/Damping.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Damping.png"
+      "image": "/media/08/01/dc/1758903135/Damping.png",
+      "imageLocal": "/media/08/01/dc/1758903135/Damping.png",
+      "imageRemote": "/media/08/01/dc/1758903135/Damping.png"
     },
     {
       "name": "Forced induction components",
@@ -1855,8 +1865,9 @@
           "path": "/car-parts/diverter-valve-charger-15215"
         }
       ],
-      "image": "https://aateile.com/media/23/fc/26/1764795051/Forced induction components.png?ts=1764795051",
-      "imageLocal": "/media/category-covers/Forced_induction_components.png"
+      "image": "/media/23/fc/26/1764795051/Forced induction components.png",
+      "imageLocal": "/media/23/fc/26/1764795051/Forced induction components.png",
+      "imageRemote": "/media/23/fc/26/1764795051/Forced induction components.png"
     },
     {
       "name": "Engine cooling system",
@@ -2053,8 +2064,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/84/48/72/1758903179/Engine cooling system.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Engine_cooling_system.png"
+      "image": "/media/84/48/72/1758903179/Engine cooling system.png",
+      "imageLocal": "/media/84/48/72/1758903179/Engine cooling system.png",
+      "imageRemote": "/media/84/48/72/1758903179/Engine cooling system.png"
     },
     {
       "name": "Body",
@@ -2263,8 +2275,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/4a/2d/2b/1758903198/Body.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Body.png"
+      "image": "/media/4a/2d/2b/1758903198/Body.png",
+      "imageLocal": "/media/4a/2d/2b/1758903198/Body.png",
+      "imageRemote": "/media/4a/2d/2b/1758903198/Body.png"
     },
     {
       "name": "Heating and ventilation",
@@ -2329,8 +2342,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/9d/a3/b3/1758903210/Heating and ventilation.png?ts=1758903210",
-      "imageLocal": "/media/category-covers/Heating_and_ventilation.png"
+      "image": "/media/9d/a3/b3/1758903210/Heating and ventilation.png",
+      "imageLocal": "/media/9d/a3/b3/1758903210/Heating and ventilation.png",
+      "imageRemote": "/media/9d/a3/b3/1758903210/Heating and ventilation.png"
     },
     {
       "name": "Gaskets and sealing rings",
@@ -2547,8 +2561,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png?ts=1758903238",
-      "imageLocal": "/media/category-covers/Gaskets_and_sealing_rings.png"
+      "image": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png",
+      "imageLocal": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png",
+      "imageRemote": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png"
     },
     {
       "name": "Exhaust",
@@ -2661,8 +2676,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/9b/3e/ff/1758903301/Exhaust.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Exhaust.png"
+      "image": "/media/9b/3e/ff/1758903301/Exhaust.png",
+      "imageLocal": "/media/9b/3e/ff/1758903301/Exhaust.png",
+      "imageRemote": "/media/9b/3e/ff/1758903301/Exhaust.png"
     },
     {
       "name": "Interior",
@@ -2839,8 +2855,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/48/d2/c2/1758903312/Interior.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Interior.png"
+      "image": "/media/48/d2/c2/1758903312/Interior.png",
+      "imageLocal": "/media/48/d2/c2/1758903312/Interior.png",
+      "imageRemote": "/media/48/d2/c2/1758903312/Interior.png"
     },
     {
       "name": "Fuel supply system",
@@ -3031,8 +3048,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ab/88/c1/1758903332/Fuel supply system.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Fuel_supply_system.png"
+      "image": "/media/ab/88/c1/1758903332/Fuel supply system.png",
+      "imageLocal": "/media/ab/88/c1/1758903332/Fuel supply system.png",
+      "imageRemote": "/media/ab/88/c1/1758903332/Fuel supply system.png"
     },
     {
       "name": "Steering",
@@ -3147,8 +3165,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/e4/b8/1e/1758903353/Steering.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Steering.png"
+      "image": "/media/e4/b8/1e/1758903353/Steering.png",
+      "imageLocal": "/media/e4/b8/1e/1758903353/Steering.png",
+      "imageRemote": "/media/e4/b8/1e/1758903353/Steering.png"
     },
     {
       "name": "Clutch",
@@ -3203,8 +3222,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/4f/f9/37/1758903366/Clutch.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Clutch.png"
+      "image": "/media/4f/f9/37/1758903366/Clutch.png",
+      "imageLocal": "/media/4f/f9/37/1758903366/Clutch.png",
+      "imageRemote": "/media/4f/f9/37/1758903366/Clutch.png"
     },
     {
       "name": "Drive shaft and cv joint",
@@ -3251,8 +3271,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/7c/c4/87/1758903447/Drive shaft and cv joint.png?ts=1758903447",
-      "imageLocal": "/media/category-covers/Drive_shaft_and_cv_joint.png"
+      "image": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png",
+      "imageLocal": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png",
+      "imageRemote": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png"
     },
     {
       "name": "Air suspension",
@@ -3275,8 +3296,9 @@
           "path": "/car-parts/relay-leveling-control-15696"
         }
       ],
-      "image": "https://aateile.com/media/fe/42/f9/1764795116/Air suspension.png?ts=1764795116",
-      "imageLocal": "/media/category-covers/Air_suspension.png"
+      "image": "/media/fe/42/f9/1764795116/Air suspension.png",
+      "imageLocal": "/media/fe/42/f9/1764795116/Air suspension.png",
+      "imageRemote": "/media/fe/42/f9/1764795116/Air suspension.png"
     },
     {
       "name": "Transmission",
@@ -3353,8 +3375,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/7a/ea/bd/1758903677/Transmission.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Transmission.png"
+      "image": "/media/7a/ea/bd/1758903677/Transmission.png",
+      "imageLocal": "/media/7a/ea/bd/1758903677/Transmission.png",
+      "imageRemote": "/media/7a/ea/bd/1758903677/Transmission.png"
     },
     {
       "name": "Air conditioning",
@@ -3473,8 +3496,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/14/5c/86/1758903689/Air conditioning.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Air_conditioning.png"
+      "image": "/media/14/5c/86/1758903689/Air conditioning.png",
+      "imageLocal": "/media/14/5c/86/1758903689/Air conditioning.png",
+      "imageRemote": "/media/14/5c/86/1758903689/Air conditioning.png"
     },
     {
       "name": "Bearings",
@@ -3551,8 +3575,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/12/dd/ca/1758903751/Bearings.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Bearings.png"
+      "image": "/media/12/dd/ca/1758903751/Bearings.png",
+      "imageLocal": "/media/12/dd/ca/1758903751/Bearings.png",
+      "imageRemote": "/media/12/dd/ca/1758903751/Bearings.png"
     },
     {
       "name": "Propshafts and differentials",
@@ -3601,8 +3626,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/a4/9e/c0/1758903777/Propshafts and differentials.png?ts=1760367865",
-      "imageLocal": "/media/category-covers/Propshafts_and_differentials.png"
+      "image": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png",
+      "imageLocal": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png",
+      "imageRemote": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png"
     },
     {
       "name": "Repair kits",
@@ -3731,8 +3757,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/c4/ba/43/1758903820/Repair kits.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Repair_kits.png"
+      "image": "/media/c4/ba/43/1758903820/Repair kits.png",
+      "imageLocal": "/media/c4/ba/43/1758903820/Repair kits.png",
+      "imageRemote": "/media/c4/ba/43/1758903820/Repair kits.png"
     },
     {
       "name": "Pipes and hoses",
@@ -3817,8 +3844,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/bf/77/39/1758903837/Pipes and hoses.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Pipes_and_hoses.png"
+      "image": "/media/bf/77/39/1758903837/Pipes and hoses.png",
+      "imageLocal": "/media/bf/77/39/1758903837/Pipes and hoses.png",
+      "imageRemote": "/media/bf/77/39/1758903837/Pipes and hoses.png"
     },
     {
       "name": "Lighting",
@@ -3951,8 +3979,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/6c/8b/b7/1758903854/Lighting.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Lighting.png"
+      "image": "/media/6c/8b/b7/1758903854/Lighting.png",
+      "imageLocal": "/media/6c/8b/b7/1758903854/Lighting.png",
+      "imageRemote": "/media/6c/8b/b7/1758903854/Lighting.png"
     },
     {
       "name": "Tuning",
@@ -3971,8 +4000,9 @@
           "path": "/car-parts/lowering-springs-15912"
         }
       ],
-      "image": "https://aateile.com/media/91/0b/14/1758903867/Tuning.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Tuning.png"
+      "image": "/media/91/0b/14/1758903867/Tuning.png",
+      "imageLocal": "/media/91/0b/14/1758903867/Tuning.png",
+      "imageRemote": "/media/91/0b/14/1758903867/Tuning.png"
     },
     {
       "name": "Fasteners",
@@ -3983,8 +4013,9 @@
           "path": "/car-parts/universal-gaskets-o-rings-15917"
         }
       ],
-      "image": "https://aateile.com/media/6d/cd/07/1758903879/Fasteners.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Fasteners.png"
+      "image": "/media/6d/cd/07/1758903879/Fasteners.png",
+      "imageLocal": "/media/6d/cd/07/1758903879/Fasteners.png",
+      "imageRemote": "/media/6d/cd/07/1758903879/Fasteners.png"
     }
   ],
   "allCategories": [
@@ -4023,8 +4054,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/8d/4c/e7/1769591112/Detailing_Auto.png?ts=1781902737",
-      "imageLocal": "/media/category-covers/Detailing_Auto.png"
+      "image": "/media/8d/4c/e7/1769591112/Detailing_Auto.png",
+      "imageLocal": "/media/8d/4c/e7/1769591112/Detailing_Auto.png",
+      "imageRemote": "/media/8d/4c/e7/1769591112/Detailing_Auto.png"
     },
     {
       "name": "Oils and fluids",
@@ -4117,8 +4149,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ba/0b/3d/1758902797/Oils and fluids.png?ts=1760367811",
-      "imageLocal": "/media/category-covers/Oils_and_fluids.png"
+      "image": "/media/ba/0b/3d/1758902797/Oils and fluids.png",
+      "imageLocal": "/media/ba/0b/3d/1758902797/Oils and fluids.png",
+      "imageRemote": "/media/ba/0b/3d/1758902797/Oils and fluids.png"
     },
     {
       "name": "Brakes",
@@ -4375,8 +4408,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/a5/ff/04/1758902837/Brakes.png?ts=1760367811",
-      "imageLocal": "/media/category-covers/Brakes.png"
+      "image": "/media/a5/ff/04/1758902837/Brakes.png",
+      "imageLocal": "/media/a5/ff/04/1758902837/Brakes.png",
+      "imageRemote": "/media/a5/ff/04/1758902837/Brakes.png"
     },
     {
       "name": "Filters",
@@ -4457,8 +4491,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/26/1f/cf/1758902858/Filters.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Filters.png"
+      "image": "/media/26/1f/cf/1758902858/Filters.png",
+      "imageLocal": "/media/26/1f/cf/1758902858/Filters.png",
+      "imageRemote": "/media/26/1f/cf/1758902858/Filters.png"
     },
     {
       "name": "Engine",
@@ -5017,8 +5052,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/c8/1e/ff/1758902872/Engine.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Engine.png"
+      "image": "/media/c8/1e/ff/1758902872/Engine.png",
+      "imageLocal": "/media/c8/1e/ff/1758902872/Engine.png",
+      "imageRemote": "/media/c8/1e/ff/1758902872/Engine.png"
     },
     {
       "name": "Wiper and washer system",
@@ -5099,8 +5135,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/17/68/50/1760367802/Wiper - washer system.png?ts=1760367802",
-      "imageLocal": "/media/category-covers/Wiper_-_washer_system.png"
+      "image": "/media/17/68/50/1760367802/Wiper - washer system.png",
+      "imageLocal": "/media/17/68/50/1760367802/Wiper - washer system.png",
+      "imageRemote": "/media/17/68/50/1760367802/Wiper - washer system.png"
     },
     {
       "name": "Ignition and preheating",
@@ -5177,8 +5214,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/76/6b/f2/1760367801/Ignition - preheating.png?ts=1760367801",
-      "imageLocal": "/media/category-covers/Ignition_-_preheating.png"
+      "image": "/media/76/6b/f2/1760367801/Ignition - preheating.png",
+      "imageLocal": "/media/76/6b/f2/1760367801/Ignition - preheating.png",
+      "imageRemote": "/media/76/6b/f2/1760367801/Ignition - preheating.png"
     },
     {
       "name": "Suspension",
@@ -5363,8 +5401,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/39/5f/cc/1758903101/Suspension.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Suspension.png"
+      "image": "/media/39/5f/cc/1758903101/Suspension.png",
+      "imageLocal": "/media/39/5f/cc/1758903101/Suspension.png",
+      "imageRemote": "/media/39/5f/cc/1758903101/Suspension.png"
     },
     {
       "name": "Electrics",
@@ -5757,8 +5796,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/1d/02/83/1758903120/Electrics.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Electrics.png"
+      "image": "/media/1d/02/83/1758903120/Electrics.png",
+      "imageLocal": "/media/1d/02/83/1758903120/Electrics.png",
+      "imageRemote": "/media/1d/02/83/1758903120/Electrics.png"
     },
     {
       "name": "Damping",
@@ -5815,8 +5855,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/08/01/dc/1758903135/Damping.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Damping.png"
+      "image": "/media/08/01/dc/1758903135/Damping.png",
+      "imageLocal": "/media/08/01/dc/1758903135/Damping.png",
+      "imageRemote": "/media/08/01/dc/1758903135/Damping.png"
     },
     {
       "name": "Forced induction components",
@@ -5843,8 +5884,9 @@
           "path": "/car-parts/diverter-valve-charger-15215"
         }
       ],
-      "image": "https://aateile.com/media/23/fc/26/1764795051/Forced induction components.png?ts=1764795051",
-      "imageLocal": "/media/category-covers/Forced_induction_components.png"
+      "image": "/media/23/fc/26/1764795051/Forced induction components.png",
+      "imageLocal": "/media/23/fc/26/1764795051/Forced induction components.png",
+      "imageRemote": "/media/23/fc/26/1764795051/Forced induction components.png"
     },
     {
       "name": "Engine cooling system",
@@ -6041,8 +6083,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/84/48/72/1758903179/Engine cooling system.png?ts=1760367810",
-      "imageLocal": "/media/category-covers/Engine_cooling_system.png"
+      "image": "/media/84/48/72/1758903179/Engine cooling system.png",
+      "imageLocal": "/media/84/48/72/1758903179/Engine cooling system.png",
+      "imageRemote": "/media/84/48/72/1758903179/Engine cooling system.png"
     },
     {
       "name": "Body",
@@ -6251,8 +6294,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/4a/2d/2b/1758903198/Body.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Body.png"
+      "image": "/media/4a/2d/2b/1758903198/Body.png",
+      "imageLocal": "/media/4a/2d/2b/1758903198/Body.png",
+      "imageRemote": "/media/4a/2d/2b/1758903198/Body.png"
     },
     {
       "name": "Heating and ventilation",
@@ -6317,8 +6361,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/9d/a3/b3/1758903210/Heating and ventilation.png?ts=1758903210",
-      "imageLocal": "/media/category-covers/Heating_and_ventilation.png"
+      "image": "/media/9d/a3/b3/1758903210/Heating and ventilation.png",
+      "imageLocal": "/media/9d/a3/b3/1758903210/Heating and ventilation.png",
+      "imageRemote": "/media/9d/a3/b3/1758903210/Heating and ventilation.png"
     },
     {
       "name": "Gaskets and sealing rings",
@@ -6535,8 +6580,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png?ts=1758903238",
-      "imageLocal": "/media/category-covers/Gaskets_and_sealing_rings.png"
+      "image": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png",
+      "imageLocal": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png",
+      "imageRemote": "/media/ec/8f/6d/1758903238/Gaskets and sealing rings.png"
     },
     {
       "name": "Exhaust",
@@ -6649,8 +6695,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/9b/3e/ff/1758903301/Exhaust.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Exhaust.png"
+      "image": "/media/9b/3e/ff/1758903301/Exhaust.png",
+      "imageLocal": "/media/9b/3e/ff/1758903301/Exhaust.png",
+      "imageRemote": "/media/9b/3e/ff/1758903301/Exhaust.png"
     },
     {
       "name": "Interior",
@@ -6827,8 +6874,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/48/d2/c2/1758903312/Interior.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Interior.png"
+      "image": "/media/48/d2/c2/1758903312/Interior.png",
+      "imageLocal": "/media/48/d2/c2/1758903312/Interior.png",
+      "imageRemote": "/media/48/d2/c2/1758903312/Interior.png"
     },
     {
       "name": "Fuel supply system",
@@ -7019,8 +7067,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/ab/88/c1/1758903332/Fuel supply system.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Fuel_supply_system.png"
+      "image": "/media/ab/88/c1/1758903332/Fuel supply system.png",
+      "imageLocal": "/media/ab/88/c1/1758903332/Fuel supply system.png",
+      "imageRemote": "/media/ab/88/c1/1758903332/Fuel supply system.png"
     },
     {
       "name": "Steering",
@@ -7135,8 +7184,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/e4/b8/1e/1758903353/Steering.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Steering.png"
+      "image": "/media/e4/b8/1e/1758903353/Steering.png",
+      "imageLocal": "/media/e4/b8/1e/1758903353/Steering.png",
+      "imageRemote": "/media/e4/b8/1e/1758903353/Steering.png"
     },
     {
       "name": "Clutch",
@@ -7191,8 +7241,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/4f/f9/37/1758903366/Clutch.png?ts=1760367809",
-      "imageLocal": "/media/category-covers/Clutch.png"
+      "image": "/media/4f/f9/37/1758903366/Clutch.png",
+      "imageLocal": "/media/4f/f9/37/1758903366/Clutch.png",
+      "imageRemote": "/media/4f/f9/37/1758903366/Clutch.png"
     },
     {
       "name": "Drive shaft and cv joint",
@@ -7239,8 +7290,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/7c/c4/87/1758903447/Drive shaft and cv joint.png?ts=1758903447",
-      "imageLocal": "/media/category-covers/Drive_shaft_and_cv_joint.png"
+      "image": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png",
+      "imageLocal": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png",
+      "imageRemote": "/media/7c/c4/87/1758903447/Drive shaft and cv joint.png"
     },
     {
       "name": "Air suspension",
@@ -7263,8 +7315,9 @@
           "path": "/car-parts/relay-leveling-control-15696"
         }
       ],
-      "image": "https://aateile.com/media/fe/42/f9/1764795116/Air suspension.png?ts=1764795116",
-      "imageLocal": "/media/category-covers/Air_suspension.png"
+      "image": "/media/fe/42/f9/1764795116/Air suspension.png",
+      "imageLocal": "/media/fe/42/f9/1764795116/Air suspension.png",
+      "imageRemote": "/media/fe/42/f9/1764795116/Air suspension.png"
     },
     {
       "name": "Transmission",
@@ -7341,8 +7394,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/7a/ea/bd/1758903677/Transmission.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Transmission.png"
+      "image": "/media/7a/ea/bd/1758903677/Transmission.png",
+      "imageLocal": "/media/7a/ea/bd/1758903677/Transmission.png",
+      "imageRemote": "/media/7a/ea/bd/1758903677/Transmission.png"
     },
     {
       "name": "Air conditioning",
@@ -7461,8 +7515,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/14/5c/86/1758903689/Air conditioning.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Air_conditioning.png"
+      "image": "/media/14/5c/86/1758903689/Air conditioning.png",
+      "imageLocal": "/media/14/5c/86/1758903689/Air conditioning.png",
+      "imageRemote": "/media/14/5c/86/1758903689/Air conditioning.png"
     },
     {
       "name": "Bearings",
@@ -7539,8 +7594,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/12/dd/ca/1758903751/Bearings.png?ts=1760367808",
-      "imageLocal": "/media/category-covers/Bearings.png"
+      "image": "/media/12/dd/ca/1758903751/Bearings.png",
+      "imageLocal": "/media/12/dd/ca/1758903751/Bearings.png",
+      "imageRemote": "/media/12/dd/ca/1758903751/Bearings.png"
     },
     {
       "name": "Propshafts and differentials",
@@ -7589,8 +7645,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/a4/9e/c0/1758903777/Propshafts and differentials.png?ts=1760367865",
-      "imageLocal": "/media/category-covers/Propshafts_and_differentials.png"
+      "image": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png",
+      "imageLocal": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png",
+      "imageRemote": "/media/a4/9e/c0/1758903777/Propshafts and differentials.png"
     },
     {
       "name": "Repair kits",
@@ -7719,8 +7776,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/c4/ba/43/1758903820/Repair kits.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Repair_kits.png"
+      "image": "/media/c4/ba/43/1758903820/Repair kits.png",
+      "imageLocal": "/media/c4/ba/43/1758903820/Repair kits.png",
+      "imageRemote": "/media/c4/ba/43/1758903820/Repair kits.png"
     },
     {
       "name": "Pipes and hoses",
@@ -7805,8 +7863,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/bf/77/39/1758903837/Pipes and hoses.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Pipes_and_hoses.png"
+      "image": "/media/bf/77/39/1758903837/Pipes and hoses.png",
+      "imageLocal": "/media/bf/77/39/1758903837/Pipes and hoses.png",
+      "imageRemote": "/media/bf/77/39/1758903837/Pipes and hoses.png"
     },
     {
       "name": "Lighting",
@@ -7939,8 +7998,9 @@
           ]
         }
       ],
-      "image": "https://aateile.com/media/6c/8b/b7/1758903854/Lighting.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Lighting.png"
+      "image": "/media/6c/8b/b7/1758903854/Lighting.png",
+      "imageLocal": "/media/6c/8b/b7/1758903854/Lighting.png",
+      "imageRemote": "/media/6c/8b/b7/1758903854/Lighting.png"
     },
     {
       "name": "Tuning",
@@ -7959,8 +8019,9 @@
           "path": "/car-parts/lowering-springs-15912"
         }
       ],
-      "image": "https://aateile.com/media/91/0b/14/1758903867/Tuning.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Tuning.png"
+      "image": "/media/91/0b/14/1758903867/Tuning.png",
+      "imageLocal": "/media/91/0b/14/1758903867/Tuning.png",
+      "imageRemote": "/media/91/0b/14/1758903867/Tuning.png"
     },
     {
       "name": "Fasteners",
@@ -7971,8 +8032,9 @@
           "path": "/car-parts/universal-gaskets-o-rings-15917"
         }
       ],
-      "image": "https://aateile.com/media/6d/cd/07/1758903879/Fasteners.png?ts=1760367807",
-      "imageLocal": "/media/category-covers/Fasteners.png"
+      "image": "/media/6d/cd/07/1758903879/Fasteners.png",
+      "imageLocal": "/media/6d/cd/07/1758903879/Fasteners.png",
+      "imageRemote": "/media/6d/cd/07/1758903879/Fasteners.png"
     }
   ],
   "vehiclePlaceholder": "/media/category-covers/vehicle-placeholder.svg",

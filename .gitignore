@@ -39,3 +39,6 @@ Thumbs.db
 # Self-hosted product image mirror (too large for git; deploy separately)
 media/s3/
 /tmp/aa-self-host-images/
+
+# Bulk self-hosted mirrors from CDN (untracked only; existing tracked logos stay)
+media/s3/

@@ -546,7 +546,9 @@ def run_wave(
                     marker.pop(f"wave{wave}", None)
                 done[eng["engineId"]] = marker
                 completed += 1
-                if completed % 25 == 0 or completed == len(pending):
+                # Wave B is slow per engine (full catalog tree) — checkpoint often
+                ck_every = 1 if wave == "B" else 25
+                if completed % ck_every == 0 or completed == len(pending):
                     fit = rebuild_aggregates(fit)
                     write_fitment(fit)
                     state["doneEngines"] = done
@@ -556,7 +558,10 @@ def run_wave(
                     rate = completed / max(1, time.time() - t0)
                     log(
                         f"checkpoint {completed}/{len(pending)} errors={errors} "
-                        f"{rate:.2f} eng/s stats={state['stats']}"
+                        f"{rate:.2f} eng/s nonempty={marker.get('nonempty')} "
+                        f"cats={marker.get('cats')} "
+                        f"{eng.get('brandName')}/{eng.get('modelName')} "
+                        f"stats={state['stats']}"
                     )
                 if (
                     not skip_catalog_merge
