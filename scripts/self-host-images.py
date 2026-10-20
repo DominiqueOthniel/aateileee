@@ -235,18 +235,34 @@ def rewrite_catalog_files(downloaded_map: dict[str, str]):
         log(f"spares-categories rewrites≈{n2}")
 
 
-def run_download(workers: int, max_urls: int | None, rewrite_every: int):
+def run_download(
+    workers: int,
+    max_urls: int | None,
+    rewrite_every: int,
+    retry_failed: bool = False,
+):
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     st = load_state()
     done = st.setdefault("done", {})
     failed = st.setdefault("failed", {})
 
-    urls = collect_remote_urls()
-    log(f"unique remote URLs={len(urls)}")
-    pending = [u for u in urls if u not in done]
+    if retry_failed:
+        # Resumable retry of previous fails (DNS/timeout/5xx); permanent 404s may fail again
+        pending = [u for u in list(failed.keys()) if u not in done]
+        log(f"RETRY_FAILED candidates={len(pending)} (from failed={len(failed)})")
+        # Clear selected fails so they can be reclassified
+        for u in pending:
+            failed.pop(u, None)
+    else:
+        urls = collect_remote_urls()
+        log(f"unique remote URLs={len(urls)}")
+        pending = [u for u in urls if u not in done]
     if max_urls:
         pending = pending[:max_urls]
     log(f"pending={len(pending)} already_done={len(done)} workers={workers}")
+    if not pending:
+        log("Nothing to download")
+        return st.get("stats") or {}
 
     ok = skip = fail = 0
     t0 = time.time()
@@ -317,12 +333,22 @@ def main():
     ap.add_argument("--max-urls", type=int, default=0)
     ap.add_argument("--rewrite-every", type=int, default=2000)
     ap.add_argument("--rewrite-only", action="store_true")
+    ap.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Retry URLs recorded in state failed map (transient DNS/SSL/5xx)",
+    )
     args = ap.parse_args()
     if args.rewrite_only:
         st = load_state()
         rewrite_catalog_files(st.get("done") or {})
         return
-    run_download(args.workers, args.max_urls or None, args.rewrite_every)
+    run_download(
+        args.workers,
+        args.max_urls or None,
+        args.rewrite_every,
+        retry_failed=args.retry_failed,
+    )
 
 
 if __name__ == "__main__":

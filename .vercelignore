@@ -1,0 +1,9 @@
+.git
+.netlify
+node_modules
+media/s3
+/tmp
+*.log
+scripts/__pycache__
+.env
+.env.*
