@@ -274,3 +274,7 @@
   from = "/readme.md"
   to = "/"
   status = 302
+
+# Built-with Netlify badge: disable in Netlify UI (Site configuration → General →
+# Built with Netlify badge) or PATCH site { "built_with_badge_enabled": false }
+# when NETLIFY_AUTH_TOKEN is valid. Code also strips badge DOM client-side.

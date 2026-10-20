@@ -23,6 +23,33 @@ body.aa-scroll-locked {
   overflow: hidden !important;
 }
 
+/* Kill Shopware splash / loaders + Netlify built-with badge (always, not only aa-nofreeze) */
+#preloader,
+#preloader.preloader_visible,
+.preloader,
+.loaderImage,
+.page-loader,
+.ajax-loader,
+.sw-loader,
+.is-loading > .loader,
+iframe[src*="netlify"],
+iframe[src*="identity.netlify"],
+a[href*="netlify.com"][href*="built"],
+a[href*="www.netlify.com/?utm"],
+#netlify-badge,
+.netlify-badge,
+[data-netlify-badge],
+[data-nf-badge] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  z-index: -1 !important;
+}
+
 /* Kill Shopware / Bootstrap freeze layers forever */
 body.aa-nofreeze #preloader,
 body.aa-nofreeze #preloader.preloader_visible,
