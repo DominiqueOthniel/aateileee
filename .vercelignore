@@ -1,7 +1,12 @@
 .git
 .netlify
+.vercel
 node_modules
-media/s3
+media
+media/
+data/catalog.json
+data/fitment.json
+data/spares-categories.json
 /tmp
 *.log
 scripts/__pycache__

@@ -6,22 +6,47 @@
     {
       "source": "/data/(.*).json",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Content-Type", "value": "application/json; charset=utf-8" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
       ]
     },
     {
       "source": "/js/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     }
   ],
   "redirects": [
-    { "source": "/vehicle/filter", "destination": "/find-parts", "permanent": false },
-    { "source": "/:lang/vehicle/filter", "destination": "/find-parts", "permanent": false },
-    { "source": "/README.md", "destination": "/", "permanent": false },
-    { "source": "/readme.md", "destination": "/", "permanent": false }
+    {
+      "source": "/vehicle/filter",
+      "destination": "/find-parts",
+      "permanent": false
+    },
+    {
+      "source": "/:lang/vehicle/filter",
+      "destination": "/find-parts",
+      "permanent": false
+    },
+    {
+      "source": "/README.md",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/readme.md",
+      "destination": "/",
+      "permanent": false
+    }
   ],
   "rewrites": [
     {
@@ -33,12 +58,33 @@
       "destination": "https://aateilepiecesauto.netlify.app/api/settings"
     },
     {
-      "source": "/media/s3/:path*",
-      "destination": "https://aateilepiecesauto.netlify.app/media/s3/:path*"
+      "source": "/media/:path*",
+      "destination": "https://aateilepiecesauto.netlify.app/media/:path*"
     },
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/", "destination": "/admin/index.html" },
-    { "source": "/widgets/checkout/info", "destination": "/stubs/widgets/checkout/info.html" },
+    {
+      "source": "/data/catalog.json",
+      "destination": "https://aateilepiecesauto.netlify.app/data/catalog.json"
+    },
+    {
+      "source": "/data/fitment.json",
+      "destination": "https://aateilepiecesauto.netlify.app/data/fitment.json"
+    },
+    {
+      "source": "/data/spares-categories.json",
+      "destination": "https://aateilepiecesauto.netlify.app/data/spares-categories.json"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/widgets/checkout/info",
+      "destination": "/stubs/widgets/checkout/info.html"
+    },
     {
       "source": "/vehicles/brands/:brand/models",
       "destination": "/stubs/vehicles/brands/:brand/models.json"
@@ -47,51 +93,153 @@
       "source": "/vehicles/models/:model/types",
       "destination": "/stubs/vehicles/models/:model/types.json"
     },
-    { "source": "/vehicles/brands", "destination": "/stubs/vehicles/brands.json" },
-    { "source": "/vehicles/models", "destination": "/stubs/vehicles/models.json" },
-    { "source": "/vehicles/engines", "destination": "/stubs/vehicles/engines.json" },
-    { "source": "/customer/vehicle", "destination": "/stubs/customer/vehicle.json" },
-    { "source": "/autoexpert/aesession", "destination": "/stubs/autoexpert/aesession.json" },
-    { "source": "/cookie/offcanvas", "destination": "/stubs/cookie/offcanvas.html" },
-    { "source": "/cookie/groups", "destination": "/stubs/cookie/groups.json" },
+    {
+      "source": "/vehicles/brands",
+      "destination": "/stubs/vehicles/brands.json"
+    },
+    {
+      "source": "/vehicles/models",
+      "destination": "/stubs/vehicles/models.json"
+    },
+    {
+      "source": "/vehicles/engines",
+      "destination": "/stubs/vehicles/engines.json"
+    },
+    {
+      "source": "/customer/vehicle",
+      "destination": "/stubs/customer/vehicle.json"
+    },
+    {
+      "source": "/autoexpert/aesession",
+      "destination": "/stubs/autoexpert/aesession.json"
+    },
+    {
+      "source": "/cookie/offcanvas",
+      "destination": "/stubs/cookie/offcanvas.html"
+    },
+    {
+      "source": "/cookie/groups",
+      "destination": "/stubs/cookie/groups.json"
+    },
     {
       "source": "/cookie/consent-offcanvas",
       "destination": "/stubs/cookie/consent-offcanvas.html"
     },
-    { "source": "/checkout/offcanvas", "destination": "/stubs/checkout/offcanvas.html" },
+    {
+      "source": "/checkout/offcanvas",
+      "destination": "/stubs/checkout/offcanvas.html"
+    },
     {
       "source": "/checkout/line-item/:path*",
       "destination": "/stubs/checkout/line-item-add.json"
     },
-    { "source": "/car-parts", "destination": "/app.html" },
-    { "source": "/car-parts/:path*", "destination": "/app.html" },
-    { "source": "/checkout", "destination": "/app.html" },
-    { "source": "/checkout/:path*", "destination": "/app.html" },
-    { "source": "/cart", "destination": "/app.html" },
-    { "source": "/account", "destination": "/app.html" },
-    { "source": "/account/:path*", "destination": "/app.html" },
-    { "source": "/wishlist", "destination": "/app.html" },
-    { "source": "/search", "destination": "/app.html" },
-    { "source": "/find-parts", "destination": "/app.html" },
-    { "source": "/fr", "destination": "/app.html" },
-    { "source": "/fr/", "destination": "/app.html" },
-    { "source": "/de", "destination": "/app.html" },
-    { "source": "/de/", "destination": "/app.html" },
-    { "source": "/contact-us", "destination": "/app.html" },
-    { "source": "/delivery", "destination": "/app.html" },
-    { "source": "/payment-methods", "destination": "/app.html" },
-    { "source": "/privacy-policy", "destination": "/app.html" },
-    { "source": "/terms-conditions", "destination": "/app.html" },
-    { "source": "/right-of-withdrawal", "destination": "/app.html" },
-    { "source": "/cookie-settings", "destination": "/app.html" },
-    { "source": "/beware-of-fraud", "destination": "/app.html" },
+    {
+      "source": "/car-parts",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/car-parts/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/checkout",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/checkout/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/cart",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/account",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/account/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/wishlist",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/search",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/find-parts",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/fr",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/fr/",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/de",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/de/",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/contact-us",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/delivery",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/payment-methods",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/terms-conditions",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/right-of-withdrawal",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/cookie-settings",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/beware-of-fraud",
+      "destination": "/app.html"
+    },
     {
       "source": "/information-on-the-disposal-of-used-oil",
       "destination": "/app.html"
     },
-    { "source": "/spares", "destination": "/app.html" },
-    { "source": "/spare-parts", "destination": "/app.html" },
-    { "source": "/pieces", "destination": "/app.html" },
-    { "source": "/((?!api/|media/|js/|css/|data/|stubs/|admin/|assets/|favicon).*)", "destination": "/app.html" }
+    {
+      "source": "/spares",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/spare-parts",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/pieces",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/((?!api/|media/|js/|css/|data/|stubs/|admin/|assets/|favicon).*)",
+      "destination": "/app.html"
+    }
   ]
 }
