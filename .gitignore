@@ -35,3 +35,7 @@ Thumbs.db
 .env
 .netlify/state.json
 .netlify/
+
+# Self-hosted product image mirror (too large for git; deploy separately)
+media/s3/
+/tmp/aa-self-host-images/

@@ -55,16 +55,30 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
   }
+  function remoteImageToLocal(src) {
+    if (!src || typeof src !== "string") return "";
+    const bare = src.split("?")[0].split("#")[0];
+    const mediaIdx = bare.indexOf("/media/");
+    if (/aateile\.com/i.test(bare) && mediaIdx >= 0) return bare.slice(mediaIdx);
+    try {
+      if (/aateile\.s3/i.test(bare)) {
+        const u = new URL(bare);
+        return "/media/s3" + u.pathname;
+      }
+    } catch {}
+    return "";
+  }
   function encodeImgUrl(src) {
     if (!src) return "";
     try {
-      const u = new URL(src, "https://aateile.com");
+      const u = new URL(src, typeof location !== "undefined" ? location.origin : "http://local");
       u.pathname = u.pathname
         .split("/")
         .map((seg) => encodeURIComponent(decodeURIComponent(seg)))
         .join("/");
       if (src.startsWith("/")) return u.pathname + u.search;
-      return u.href;
+      if (src.startsWith("media/")) return "/" + u.pathname.replace(/^\//, "") + u.search;
+      return u.pathname + u.search;
     } catch {
       return String(src).replace(/ /g, "%20");
     }
@@ -73,23 +87,28 @@
     const candidates = [item?.imageLocal, item?.image, item?.imageRemote]
       .concat(Array.isArray(item?.images) ? item.images : [])
       .filter(Boolean);
-    let src =
-      candidates.find(
-        (u) =>
-          typeof u === "string" &&
-          !/logo-white|logo-black|header-logo|transparent-fr\.svg|(?:^|[/_-])LOGO(?:[._-]|$)|OSRAM_LOGO|brand[_-]?logo|wordmark/i.test(
-            u
-          )
-      ) || "";
-    if (!src) {
-      return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    const PLACEHOLDER =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    for (const raw of candidates) {
+      if (
+        typeof raw !== "string" ||
+        /logo-white|logo-black|header-logo|transparent-fr\.svg|(?:^|[/_-])LOGO(?:[._-]|$)|OSRAM_LOGO|brand[_-]?logo|wordmark/i.test(
+          raw
+        )
+      ) {
+        continue;
+      }
+      let src = raw;
+      if (src.startsWith("//")) src = "https:" + src;
+      if (/^https?:\/\//i.test(src) && /aateile\.(com|s3)/i.test(src)) {
+        src = remoteImageToLocal(src);
+        if (!src) continue;
+      }
+      if (src.startsWith("media/")) src = "/" + src.split("?")[0];
+      if (src.startsWith("/media/")) return encodeImgUrl(src.split("?")[0]);
+      if (src.startsWith("/") && !/^https?:/i.test(src)) return encodeImgUrl(src);
     }
-    if (src.startsWith("//")) src = "https:" + src;
-    if (src.startsWith("media/")) src = "https://aateile.com/" + src.split("?")[0];
-    else if (src.startsWith("/media/") && !src.includes("/product-covers/")) {
-      src = "https://aateile.com" + src.split("?")[0];
-    }
-    return encodeImgUrl(src);
+    return PLACEHOLDER;
   }
   function cartCount(cart) {
     return cart.reduce((n, i) => n + (i.qty || 0), 0);

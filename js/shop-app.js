@@ -174,18 +174,41 @@
   function encodeImgUrl(src) {
     if (!src) return "";
     try {
-      // Encode spaces and unsafe chars while keeping a valid absolute/relative URL
-      const u = new URL(src, "https://aateile.com");
+      // Same-origin only — never build absolute aateile.com URLs for <img>
+      const u = new URL(src, typeof location !== "undefined" ? location.origin : "http://local");
       u.pathname = u.pathname
         .split("/")
         .map((seg) => encodeURIComponent(decodeURIComponent(seg)))
         .join("/");
       if (src.startsWith("/")) return u.pathname + u.search;
-      if (src.startsWith("media/")) return u.pathname.replace(/^\//, "") + u.search;
-      return u.href;
+      if (src.startsWith("media/")) return "/" + u.pathname.replace(/^\//, "") + u.search;
+      // Block any leftover absolute third-party hosts in the browser
+      if (u.origin !== (typeof location !== "undefined" ? location.origin : u.origin)) {
+        if (/aateile\.com|aateile\.s3/i.test(u.href)) {
+          const mapped = remoteImageToLocal(u.href);
+          if (mapped) return mapped;
+          return "";
+        }
+      }
+      return src.startsWith("http") ? u.pathname + u.search : u.pathname + u.search;
     } catch {
       return src.replace(/ /g, "%20");
     }
+  }
+
+  /** Map former CDN URLs to self-hosted /media/... paths (no network to aateile). */
+  function remoteImageToLocal(src) {
+    if (!src || typeof src !== "string") return "";
+    const bare = src.split("?")[0].split("#")[0];
+    const mediaIdx = bare.indexOf("/media/");
+    if (/aateile\.com/i.test(bare) && mediaIdx >= 0) return bare.slice(mediaIdx);
+    try {
+      if (/aateile\.s3/i.test(bare)) {
+        const u = new URL(bare);
+        return "/media/s3" + u.pathname;
+      }
+    } catch {}
+    return "";
   }
 
   function isBrandLogoUrl(u) {
@@ -200,24 +223,29 @@
     const candidates = [];
     if (p?.imageLocal) candidates.push(p.imageLocal);
     if (p?.image) candidates.push(p.image);
-    if (p?.imageRemote) candidates.push(p.imageRemote);
     if (Array.isArray(p?.images)) {
       for (const u of p.images) {
         if (typeof u === "string" && u) candidates.push(u);
       }
     }
-    let src = candidates.find((u) => u && !isBrandLogoUrl(u)) || "";
-    if (!src) {
-      // Neutral 1×1 pixel — never site chrome or brand wordmark placeholders
-      return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    // imageRemote only as a mapping source to local path — never hotlink in the browser
+    if (p?.imageRemote) candidates.push(p.imageRemote);
+    const PLACEHOLDER =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+    for (const raw of candidates) {
+      if (!raw || isBrandLogoUrl(raw)) continue;
+      let src = raw;
+      if (src.startsWith("//")) src = "https:" + src;
+      if (/^https?:\/\//i.test(src) && /aateile\.(com|s3)/i.test(src)) {
+        src = remoteImageToLocal(src);
+        if (!src) continue;
+      }
+      if (src.startsWith("media/")) src = "/" + src.split("?")[0];
+      if (src.startsWith("/media/")) return encodeImgUrl(src.split("?")[0]);
+      // Allow other same-origin relative paths
+      if (src.startsWith("/") && !/^https?:/i.test(src)) return encodeImgUrl(src);
     }
-    if (src.startsWith("//")) src = "https:" + src;
-    if (src.startsWith("media/")) src = "https://aateile.com/" + src.split("?")[0];
-    else if (src.startsWith("/media/") && !src.startsWith("/media/product-covers/")) {
-      // Incomplete local mirror of Shopware media → hotlink official CDN
-      if (!src.includes("/product-covers/")) src = "https://aateile.com" + src.split("?")[0];
-    }
-    return encodeImgUrl(src);
+    return PLACEHOLDER;
   }
 
   function findProduct(path) {
@@ -905,8 +933,15 @@
   }
 
   function catImg(c) {
-    if (c?.imageLocal) return c.imageLocal;
-    if (c?.image) return encodeImgUrl(c.image);
+    if (c?.imageLocal) return encodeImgUrl(c.imageLocal);
+    if (c?.image) {
+      let src = c.image;
+      if (/^https?:\/\//i.test(src) && /aateile\.(com|s3)/i.test(src)) {
+        src = remoteImageToLocal(src) || src;
+      }
+      if (typeof src === "string" && src.startsWith("/media/")) return encodeImgUrl(src);
+      if (typeof src === "string" && !/^https?:\/\//i.test(src)) return encodeImgUrl(src);
+    }
     return "/media/category-covers/vehicle-placeholder.svg";
   }
 
