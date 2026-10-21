@@ -55,12 +55,12 @@ for item in ROOT.iterdir():
                 src = item / f
                 if src.exists():
                     shutil.copy2(src, STATIC / "data" / f)
-            # Prefer prebuilt gzip snapshots (Blob Hobby cannot hold 1.3GB JSON)
+            # Prefer repo gzip snapshots (Blob Hobby cannot hold 1.3GB JSON)
             for f in ("catalog.json.gz", "fitment.json.gz"):
                 for cand in (
-                    Path("/tmp/aa-gzip-data") / f,
                     item / f,
                     ROOT / "data" / f,
+                    Path("/tmp/aa-gzip-data") / f,
                 ):
                     if cand.is_file() and cand.stat().st_size > 1000:
                         shutil.copy2(cand, STATIC / "data" / f)
