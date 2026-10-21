@@ -43,7 +43,7 @@ paths = set()
 def walk(o):
     if isinstance(o, dict):
         for k, v in o.items():
-            if isinstance(v, str) and v.startswith("/media/"):
+            if isinstance(v, str) and v.startswith("/media/") and not v.startswith("/media/s3/"):
                 paths.add(v.split("?")[0])
             else:
                 walk(v)
@@ -52,9 +52,11 @@ def walk(o):
             walk(i)
 
 walk(sp)
-for p in (ROOT / "media/category-covers").iterdir():
-    if p.is_file():
-        paths.add("/media/category-covers/" + p.name)
+covers = ROOT / "media/category-covers"
+if covers.is_dir():
+    for p in covers.iterdir():
+        if p.is_file():
+            paths.add("/media/category-covers/" + p.name)
 paths.add("/media/category-covers/vehicle-placeholder.svg")
 # Header logos used on homepage
 for rel in (
@@ -63,13 +65,49 @@ for rel in (
 ):
     paths.add(rel)
 
+# Homepage (and shell) media: category covers + bestsellers thumbs, not /media/s3
+# index.html uses both "/media/..." and relative "media/..."
+media_re = re.compile(
+    r"""(?:src|srcset|data-src|url\()\s*=?\s*["']?(?:/)?(media/(?!s3/)[^"')\s]+)""",
+    re.I,
+)
+bare_re = re.compile(
+    r"""(?<![\w.-])(?:/)?(media/(?!s3/)[0-9a-f]{2}/[0-9a-f]{2}/[0-9a-f]{2}/[^"'\\\s)]+)""",
+    re.I,
+)
+for name in ("index.html", "app.html", "404.html"):
+    html = ROOT / name
+    if not html.is_file():
+        continue
+    text = html.read_text(encoding="utf-8", errors="replace")
+    for m in media_re.findall(text) + bare_re.findall(text):
+        rel = "/" + m.lstrip("/").split("?")[0].split(" ")[0]
+        if not rel.startswith("/media/s3/"):
+            paths.add(rel)
+
+missing = []
+copied = 0
 for rel in sorted(paths):
     src = ROOT / rel.lstrip("/")
     if not src.is_file():
-        continue
+        # try percent-decoded filesystem name
+        from urllib.parse import unquote
+        src2 = ROOT / unquote(rel.lstrip("/"))
+        if src2.is_file():
+            src = src2
+        else:
+            missing.append(rel)
+            continue
     dst = PUB / rel.lstrip("/")
+    # Prefer decoded path on disk for publish when file uses spaces
+    from urllib.parse import unquote
+    dst = PUB / unquote(rel.lstrip("/"))
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
+    copied += 1
+print(f"media_paths={len(paths)} copied={copied} missing={len(missing)}")
+if missing[:12]:
+    print("missing_sample", missing[:12])
 
 # Keep project link for vercel CLI
 src_v = ROOT / ".vercel/project.json"
