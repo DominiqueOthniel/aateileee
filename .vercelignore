@@ -2,11 +2,11 @@
 .netlify
 .vercel
 node_modules
-media
-media/
+# Bulk product mirror stays off Vercel (Netlify/R2 later). Homepage covers ship via lean publish.
+media/s3/
+media/s3/**
 data/catalog.json
 data/fitment.json
-data/spares-categories.json
 /tmp
 *.log
 scripts/__pycache__

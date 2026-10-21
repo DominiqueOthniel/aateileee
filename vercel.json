@@ -58,8 +58,8 @@
       "destination": "https://aateilepiecesauto.netlify.app/api/settings"
     },
     {
-      "source": "/media/:path*",
-      "destination": "https://aateilepiecesauto.netlify.app/media/:path*"
+      "source": "/media/s3/:path*",
+      "destination": "https://aateilepiecesauto.netlify.app/media/s3/:path*"
     },
     {
       "source": "/data/catalog.json",
@@ -68,10 +68,6 @@
     {
       "source": "/data/fitment.json",
       "destination": "https://aateilepiecesauto.netlify.app/data/fitment.json"
-    },
-    {
-      "source": "/data/spares-categories.json",
-      "destination": "https://aateilepiecesauto.netlify.app/data/spares-categories.json"
     },
     {
       "source": "/admin",
