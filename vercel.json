@@ -1,7 +1,6 @@
 {
   "version": 2,
   "buildCommand": "echo Static shop clone ready",
-  "outputDirectory": ".",
   "headers": [
     {
       "source": "/data/(.*).json",
@@ -13,6 +12,19 @@
         {
           "key": "Content-Type",
           "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/data/(.*).json.gz",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/gzip"
         }
       ]
     },
@@ -50,24 +62,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/analytics",
-      "destination": "https://aateilepiecesauto.netlify.app/api/analytics"
-    },
-    {
-      "source": "/api/settings",
-      "destination": "https://aateilepiecesauto.netlify.app/api/settings"
-    },
-    {
       "source": "/media/s3/:path*",
-      "destination": "https://aateilepiecesauto.netlify.app/media/s3/:path*"
-    },
-    {
-      "source": "/data/catalog.json",
-      "destination": "https://aateilepiecesauto.netlify.app/data/catalog.json"
-    },
-    {
-      "source": "/data/fitment.json",
-      "destination": "https://aateilepiecesauto.netlify.app/data/fitment.json"
+      "destination": "https://47sii87xn2moiwd4.public.blob.vercel-storage.com/media/s3/:path*"
     },
     {
       "source": "/admin",

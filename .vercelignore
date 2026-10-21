@@ -2,7 +2,7 @@
 .netlify
 .vercel
 node_modules
-# Bulk product mirror stays off Vercel (Netlify/R2 later). Homepage covers ship via lean publish.
+# Bulk product media + huge JSON live on Vercel Blob (see scripts/upload-to-vercel-blob.mjs).
 media/s3/
 media/s3/**
 data/catalog.json
@@ -12,3 +12,7 @@ data/fitment.json
 scripts/__pycache__
 .env
 .env.*
+.env.local
+netlify/
+.netlifyignore
+netlify.toml

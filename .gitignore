@@ -43,3 +43,4 @@ media/s3/
 # Bulk self-hosted mirrors from CDN (untracked only; existing tracked logos stay)
 media/s3/
 .vercel
+.env*

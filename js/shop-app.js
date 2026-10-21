@@ -2311,7 +2311,14 @@
   async function loadJson(url) {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(String(res.status));
-    return res.json();
+    const wantsGzip = /\.gz(?:$|\?)/i.test(url);
+    if (!wantsGzip) return res.json();
+    if (typeof DecompressionStream === "function" && res.body) {
+      const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
+      const text = await new Response(stream).text();
+      return JSON.parse(text);
+    }
+    throw new Error("gzip_unsupported");
   }
 
   async function loadLightData(bust) {
@@ -2325,7 +2332,7 @@
           }
         })
         .catch(() => {}),
-      loadJson(`/data/fitment.json?${bust}`)
+      loadJson(`/data/fitment.json.gz?${bust}`)
         .then((fit) => {
           state.catalog.fitment = fit;
         })
@@ -2336,7 +2343,7 @@
 
   async function loadCatalogHeavy(bust) {
     try {
-      const catalog = await loadJson(`/data/catalog.json?${bust}`);
+      const catalog = await loadJson(`/data/catalog.json.gz?${bust}`);
       const fitment = state.catalog?.fitment;
       const spares = state.sparesCategories || state.catalog?.sparesCategories;
       state.catalog = catalog;

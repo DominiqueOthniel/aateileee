@@ -716,8 +716,15 @@
     }, 2000);
 
     try {
-      const res = await fetch("/data/catalog.json");
-      catalog = await res.json();
+      const res = await fetch("/data/catalog.json.gz", { cache: "no-store" });
+      if (!res.ok) throw new Error(String(res.status));
+      if (typeof DecompressionStream === "function" && res.body) {
+        const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
+        const text = await new Response(stream).text();
+        catalog = JSON.parse(text);
+      } else {
+        throw new Error("gzip_unsupported");
+      }
     } catch {
       catalog = { products: [] };
     }
