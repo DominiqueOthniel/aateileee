@@ -716,7 +716,8 @@
     }, 2000);
 
     try {
-      const res = await fetch("/data/catalog.json.gz", { cache: "no-store" });
+      // Browser-safe catalog only. Full catalog.json.gz inflates ~600MB and OOMs tabs.
+      const res = await fetch("/data/shop-catalog.json.gz", { cache: "no-store" });
       if (!res.ok) throw new Error(String(res.status));
       if (typeof DecompressionStream === "function" && res.body) {
         const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
