@@ -1,4 +1,5 @@
-.git
+# Do NOT ignore .git: Git LFS pull during install/build needs it.
+# (build-vercel-public.sh also falls back to media.githubusercontent.com.)
 .netlify
 .vercel
 node_modules

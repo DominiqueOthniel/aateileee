@@ -1,24 +1,119 @@
 #!/usr/bin/env bash
 # GitHub / Vercel build: write lean static assets into ./public
 # (api/ stays at repo root for serverless). Safe to run in-checkout.
+#
+# Vercel Git clones often leave Git LFS pointer stubs for data/*.json.gz.
+# Materialize real gz files before copying into public/, then fail hard if
+# they are still missing (otherwise Production/Preview go READY without
+# /data/fitment.json.gz and the SPA 404 page is served under that path).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-# Vercel Git clones often leave LFS pointers; materialize real gz/json before copy.
-if command -v git >/dev/null 2>&1 && [ -d .git ]; then
+
+MIN_GZ_BYTES=1000000
+
+is_lfs_pointer() {
+  local f="$1"
+  [ -f "$f" ] || return 1
+  local sz
+  sz="$(wc -c < "$f")"
+  [ "$sz" -lt 1000 ] || return 1
+  head -c 80 "$f" | grep -q 'git-lfs.github.com/spec' 2>/dev/null
+}
+
+ensure_git_lfs() {
   if command -v git-lfs >/dev/null 2>&1 || git lfs version >/dev/null 2>&1; then
-    git lfs install --local >/dev/null 2>&1 || true
-    git lfs pull --include="data/*.json.gz,data/fitment.json,data/catalog.json" || git lfs pull || true
+    return 0
   fi
-fi
+  echo "git-lfs missing; trying install…"
+  if command -v apt-get >/dev/null 2>&1; then
+    (curl -fsSL https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash) || true
+    sudo apt-get install -y git-lfs || true
+  fi
+  if ! command -v git-lfs >/dev/null 2>&1 && ! git lfs version >/dev/null 2>&1; then
+    local ver="3.5.1"
+    local tmp="/tmp/git-lfs-$$"
+    mkdir -p "$tmp"
+    curl -fsSL "https://github.com/git-lfs/git-lfs/releases/download/v${ver}/git-lfs-linux-amd64-v${ver}.tar.gz" \
+      -o "$tmp/git-lfs.tgz"
+    tar -xzf "$tmp/git-lfs.tgz" -C "$tmp"
+    sudo "$tmp/git-lfs-${ver}/install.sh" || sudo cp "$tmp"/git-lfs-*/git-lfs /usr/local/bin/
+    rm -rf "$tmp"
+  fi
+  git lfs version
+}
+
+materialize_lfs_gz() {
+  local need=0
+  local f
+  for f in data/fitment.json.gz data/catalog.json.gz; do
+    if [ ! -f "$f" ] || is_lfs_pointer "$f" || [ "$(wc -c < "$f")" -lt "$MIN_GZ_BYTES" ]; then
+      need=1
+      break
+    fi
+  done
+  [ "$need" -eq 1 ] || return 0
+
+  if [ -d .git ]; then
+    ensure_git_lfs
+    git lfs install --local >/dev/null 2>&1 || git lfs install || true
+    echo "git lfs pull for data/*.json.gz…"
+    git lfs pull --include="data/*.json.gz" || git lfs pull
+  fi
+
+  for f in data/fitment.json.gz data/catalog.json.gz; do
+    if [ -f "$f" ] && ! is_lfs_pointer "$f" && [ "$(wc -c < "$f")" -ge "$MIN_GZ_BYTES" ]; then
+      continue
+    fi
+    # Fallback: public GitHub LFS media URL (works even when .vercelignore stripped .git).
+    local ref="${VERCEL_GIT_COMMIT_SHA:-${VERCEL_GIT_COMMIT_REF:-main}}"
+    [ -n "$ref" ] || ref="main"
+    local repo="${VERCEL_GIT_REPO_OWNER:-DominiqueOthniel}/${VERCEL_GIT_REPO_SLUG:-aateileee}"
+    local url="https://media.githubusercontent.com/media/${repo}/${ref}/${f}"
+    echo "Downloading $f from $url"
+    mkdir -p "$(dirname "$f")"
+    local tmp="${f}.tmp.$$"
+    if ! curl -fsSL --retry 3 --retry-delay 2 -o "$tmp" "$url"; then
+      # Commit SHA may not be on media CDN yet; try branch / main.
+      local br="${VERCEL_GIT_COMMIT_REF:-main}"
+      url="https://media.githubusercontent.com/media/${repo}/${br}/${f}"
+      echo "Retry $f from $url"
+      curl -fsSL --retry 3 --retry-delay 2 -o "$tmp" "$url" \
+        || curl -fsSL --retry 3 --retry-delay 2 -o "$tmp" \
+          "https://media.githubusercontent.com/media/${repo}/main/${f}"
+    fi
+    local sz
+    sz="$(wc -c < "$tmp")"
+    if [ "$sz" -lt "$MIN_GZ_BYTES" ]; then
+      echo "ERROR: downloaded $f is only $sz bytes (want >= $MIN_GZ_BYTES)" >&2
+      head -c 160 "$tmp" >&2 || true
+      echo >&2
+      rm -f "$tmp"
+      exit 1
+    fi
+    mv -f "$tmp" "$f"
+    echo "OK $f ($sz bytes)"
+  done
+}
+
+materialize_lfs_gz
+
 for f in data/fitment.json.gz data/catalog.json.gz; do
-  if [ -f "$f" ] && [ "$(wc -c < "$f")" -lt 1000 ]; then
-    echo "ERROR: $f looks like a Git LFS pointer ($(wc -c < "$f") bytes). git lfs pull required." >&2
-    head -c 120 "$f" >&2 || true
+  if [ ! -f "$f" ]; then
+    echo "ERROR: missing $f after LFS materialize" >&2
+    exit 1
+  fi
+  sz="$(wc -c < "$f")"
+  if [ "$sz" -lt "$MIN_GZ_BYTES" ] || is_lfs_pointer "$f"; then
+    echo "ERROR: $f looks like a Git LFS pointer or is too small ($sz bytes)." >&2
+    echo "Keep .git out of .vercelignore (or use media.githubusercontent.com fallback)." >&2
+    head -c 160 "$f" >&2 || true
     echo >&2
     exit 1
   fi
+  echo "SOURCE_OK $f ($sz bytes)"
 done
+
 python3 - "$ROOT" <<'PY'
 import json, re, shutil, sys
 from pathlib import Path
@@ -26,6 +121,7 @@ from urllib.parse import unquote
 
 ROOT = Path(sys.argv[1])
 STATIC = ROOT / "public"
+MIN_GZ = 1_000_000
 if STATIC.exists():
     shutil.rmtree(STATIC)
 STATIC.mkdir(parents=True)
@@ -68,14 +164,21 @@ for item in ROOT.iterdir():
                 if src.exists():
                     shutil.copy2(src, STATIC / "data" / f)
             for f in ("catalog.json.gz", "fitment.json.gz"):
+                copied = False
                 for cand in (
                     item / f,
                     ROOT / "data" / f,
                     Path("/tmp/aa-gzip-data") / f,
                 ):
-                    if cand.is_file() and cand.stat().st_size > 1000:
+                    if cand.is_file() and cand.stat().st_size >= MIN_GZ:
                         shutil.copy2(cand, STATIC / "data" / f)
+                        copied = True
                         break
+                if not copied:
+                    raise SystemExit(
+                        f"ERROR: could not copy data/{f} into public/ "
+                        f"(need a real gz >= {MIN_GZ} bytes)"
+                    )
             continue
         shutil.copytree(
             item,
@@ -143,6 +246,12 @@ for rel in sorted(paths):
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
     copied += 1
+
+for f in ("fitment.json.gz", "catalog.json.gz"):
+    p = STATIC / "data" / f
+    if not p.is_file() or p.stat().st_size < MIN_GZ:
+        raise SystemExit(f"ERROR: public/data/{f} missing or too small after build")
+    print(f"PUBLIC_OK data/{f} ({p.stat().st_size} bytes)")
 
 print(f"PUBLIC_BUILD {STATIC}")
 print(f"media_paths={len(paths)} copied={copied} missing={len(missing)}")
