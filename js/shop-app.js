@@ -14,6 +14,12 @@
     cart: loadCart(),
     wishlist: loadWishlist(),
     account: loadAccount(),
+    lightReady: false,
+    catalogReady: false,
+    fitmentReady: false,
+    fitmentLoading: false,
+    sparesCategories: null,
+    _navWired: false,
   };
 
   function loadCart() {
@@ -403,36 +409,51 @@
   }
 
   function viewSparesHub() {
-    // Official /spares is the spare-parts category hub
-    const cats = (state.catalog?.categories || [])
+    // Official /spares is the spare-parts category hub.
+    // Prefer light spares-categories tree so the page paints without waiting for catalog.gz.
+    const tree = sparesTree();
+    const catalogCats = state.catalog?.categories || [];
+    const treeCats = (tree.allCategories?.length ? tree.allCategories : tree.topCategories || []).map((c) => ({
+      name: c.name,
+      path: c.path,
+      image: c.image || c.imageLocal || c.imageRemote,
+    }));
+    const cats = (catalogCats.length ? catalogCats : treeCats)
       .slice()
       .sort((a, b) => String(a.name).localeCompare(String(b.name)));
-    const top = state.catalog?.topCategories || [];
-    const withCounts = cats
-      .map((c) => ({ ...c, count: productsForCategory(c.path).length }))
-      .filter((c) => c.count > 0);
+    const top = state.catalog?.topCategories?.length ? state.catalog.topCategories : tree.topCategories || [];
+    const catalogReady = !!(state.catalog?.products?.length);
+    const withCounts = cats.map((c) => ({ ...c, count: productsForCategory(c.path).length }));
+    // Until the heavy catalog arrives, show every category (counts would all be 0).
+    const listed = catalogReady ? withCounts.filter((c) => c.count > 0) : withCounts;
     const topPaths = new Set(
       (top || []).map((c) => (typeof c === "string" ? c : c.path)).filter(Boolean)
     );
-    const topCats = withCounts.filter((c) => topPaths.has(c.path));
-    const topShow = (topCats.length ? topCats : withCounts.slice(0, 24));
+    const topCats = listed.filter((c) => topPaths.has(c.path));
+    const topShow = topCats.length ? topCats : listed.slice(0, 24);
+    const productN = state.catalog?.products?.length || 0;
     return `<div class="aa-wrap">
       <div class="aa-breadcrumb"><a href="/">${esc(t("home"))}</a> / ${esc(t("spareParts"))}</div>
       <h1 class="aa-h1">${esc(t("spareParts"))}</h1>
-      <p class="aa-sub">${esc(t("sparesHubHint", { n: cats.length, p: state.catalog?.products?.length || 0 }))}</p>
+      <p class="aa-sub">${esc(t("sparesHubHint", { n: cats.length, p: productN }))}</p>
       <form class="aa-searchbar" data-search-form action="/search">
         <input name="search" placeholder="${esc(t("searchPlaceholder"))}">
         <button class="aa-btn" style="width:auto">${esc(t("search"))}</button>
       </form>
       <h2 class="aa-h2">${esc(t("topCategories"))}</h2>
       <div class="aa-cat-chips">${topShow
-        .map((c) => `<a class="aa-cat-chip" href="${esc(c.path)}">${esc(c.name)} (${c.count})</a>`)
+        .map((c) => {
+          const label = catalogReady && c.count ? `${esc(c.name)} (${c.count})` : esc(c.name);
+          return `<a class="aa-cat-chip" href="${esc(c.path)}">${label}</a>`;
+        })
         .join("")}</div>
       <h2 class="aa-h2">${esc(t("allCategories"))}</h2>
-      <div class="aa-cat-list">${cats
+      <div class="aa-cat-list">${listed
         .map((c) => {
-          const n = productsForCategory(c.path).length;
-          return `<a href="${esc(c.path)}">${esc(c.name)}${n ? ` <span class="aa-muted">(${n})</span>` : ""}</a>`;
+          const n = c.count;
+          return `<a href="${esc(c.path)}">${esc(c.name)}${
+            catalogReady && n ? ` <span class="aa-muted">(${n})</span>` : ""
+          }</a>`;
         })
         .join("")}</div>
       <p class="aa-sub" style="margin-top:24px"><a href="/car-parts">${esc(t("carParts"))}</a> · <button type="button" class="aa-linkish" data-aa-change-vehicle>${esc(t("findParts"))}</button></p>
@@ -1319,9 +1340,44 @@
     const root = ensureShell();
     root.innerHTML = `<div class="aa-wrap aa-route-loading" data-aa-route-loading>
       <p class="aa-h1" style="font-size:1.25rem">${esc(message || t("vehicleLoading"))}</p>
-      <p class="aa-sub">${esc(t("spareParts"))}…</p>
+      <p class="aa-sub">${esc(t("spareParts"))}</p>
     </div>`;
     return root;
+  }
+
+  function showRouteError(message) {
+    const root = ensureShell();
+    root.style.removeProperty("display");
+    root.innerHTML = `<div class="aa-wrap aa-route-error" data-aa-route-error>
+      <h1 class="aa-h1">${esc(t("spareParts"))}</h1>
+      <p class="aa-empty">${esc(message || t("sparesLoadError"))}</p>
+      <p style="margin:16px">
+        <button type="button" class="aa-btn" style="width:auto" data-aa-retry-boot>${esc(t("tryAgain"))}</button>
+        <a class="aa-btn aa-btn-black" style="width:auto;margin-left:8px" href="/">${esc(t("home"))}</a>
+      </p>
+    </div>`;
+    root.querySelector("[data-aa-retry-boot]")?.addEventListener("click", () => {
+      retrySparesBoot();
+    });
+    return root;
+  }
+
+  async function retrySparesBoot() {
+    showRouteLoading(t("vehicleLoading"));
+    const bust = `v=${encodeURIComponent(Date.now().toString(36))}`;
+    try {
+      await loadSparesCategories(bust);
+      state.lightReady = true;
+      render();
+      loadFitmentBackground(bust);
+      loadCatalogHeavy(bust).then((ok) => {
+        state.catalogReady = !!ok;
+        if (ok) render();
+      });
+    } catch (err) {
+      console.warn("aa spares retry failed", err);
+      showRouteError(t("sparesLoadError"));
+    }
   }
 
   function fallbackSparesHtml(params) {
@@ -1341,7 +1397,10 @@
           <button type="button" class="aa-vehicle-btn aa-vehicle-btn-solid" data-aa-change-vehicle>${esc(t("change"))}</button>
         </div>
       </section>
-      <p class="aa-empty">${esc(t("vehicleLoading"))}</p>
+      <p class="aa-empty">${esc(t("sparesLoadError"))}</p>
+      <p style="margin:16px 0">
+        <button type="button" class="aa-btn" style="width:auto" data-aa-retry-boot>${esc(t("tryAgain"))}</button>
+      </p>
     </div>`;
   }
 
@@ -2308,37 +2367,68 @@
     }
   }
 
-  async function loadJson(url) {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(String(res.status));
-    const wantsGzip = /\.gz(?:$|\?)/i.test(url);
-    if (!wantsGzip) return res.json();
-    if (typeof DecompressionStream === "function" && res.body) {
-      const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
-      const text = await new Response(stream).text();
-      return JSON.parse(text);
+  async function loadJson(url, opts = {}) {
+    const timeoutMs = Number(opts.timeoutMs) || 0;
+    const ctrl = timeoutMs > 0 ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+    try {
+      const res = await fetch(url, { cache: "no-store", signal: ctrl?.signal });
+      if (!res.ok) throw new Error(String(res.status));
+      const wantsGzip = /\.gz(?:$|\?)/i.test(url);
+      if (!wantsGzip) return res.json();
+      if (typeof DecompressionStream === "function" && res.body) {
+        const stream = res.body.pipeThrough(new DecompressionStream("gzip"));
+        const text = await new Response(stream).text();
+        return JSON.parse(text);
+      }
+      throw new Error("gzip_unsupported");
+    } finally {
+      if (timer) clearTimeout(timer);
     }
-    throw new Error("gzip_unsupported");
   }
 
-  async function loadLightData(bust) {
-    const tasks = [
-      loadJson(`/data/spares-categories.json?${bust}`)
-        .then((spares) => {
-          state.sparesCategories = spares;
-          state.catalog.sparesCategories = spares;
-          if (!state.catalog.topCategories?.length && spares.topCategories) {
-            state.catalog.topCategories = spares.topCategories;
+  function applySparesCategories(spares) {
+    if (!spares) return;
+    state.sparesCategories = spares;
+    state.catalog = state.catalog || {};
+    state.catalog.sparesCategories = spares;
+    if (!state.catalog.topCategories?.length && spares.topCategories) {
+      state.catalog.topCategories = spares.topCategories;
+    }
+  }
+
+  /** Fast path only: ~250KB JSON. Never await fitment/catalog gz here. */
+  async function loadSparesCategories(bust) {
+    const spares = await loadJson(`/data/spares-categories.json?${bust}`, { timeoutMs: 15000 });
+    applySparesCategories(spares);
+    return spares;
+  }
+
+  /** Background: large gzip fitment. Must not block /spares first paint. */
+  function loadFitmentBackground(bust) {
+    if (state.fitmentLoading || state.catalog?.fitment) return;
+    state.fitmentLoading = true;
+    loadJson(`/data/fitment.json.gz?${bust}`)
+      .then((fit) => {
+        state.catalog = state.catalog || {};
+        state.catalog.fitment = fit;
+        state.fitmentReady = true;
+        const path = location.pathname.replace(/\/+$/, "") || "/";
+        if (isSparesPath(path) || path === "/find-parts") {
+          try {
+            render();
+          } catch (_) {
+            /* ignore */
           }
-        })
-        .catch(() => {}),
-      loadJson(`/data/fitment.json.gz?${bust}`)
-        .then((fit) => {
-          state.catalog.fitment = fit;
-        })
-        .catch(() => {}),
-    ];
-    await Promise.all(tasks);
+        }
+      })
+      .catch((err) => {
+        console.warn("aa fitment load failed", err);
+        state.fitmentReady = false;
+      })
+      .finally(() => {
+        state.fitmentLoading = false;
+      });
   }
 
   async function loadCatalogHeavy(bust) {
@@ -2387,11 +2477,13 @@
     document.querySelectorAll("#preloader").forEach((el) => el.remove());
     state.lightReady = false;
     state.catalogReady = false;
+    state.fitmentReady = false;
 
     window.__AA_NAV__ = {
       go: navigateTo,
       render,
       changeVehicle: openChangeVehicleModal,
+      retry: retrySparesBoot,
     };
 
     const bust = `v=${encodeURIComponent(window.__AA_BUILD__ || Date.now().toString(36))}`;
@@ -2402,12 +2494,32 @@
       showRouteLoading(t("vehicleLoading"));
     }
 
+    // Hard cap: never leave the static "Loading… Spare parts" shell forever.
+    const loadingWatchdog = onSpaRoute
+      ? setTimeout(() => {
+          if (document.querySelector("[data-aa-route-loading]") && !state.sparesCategories) {
+            showRouteError(t("sparesLoadError"));
+          }
+        }, 18000)
+      : null;
+
+    // Light boot: only spares-categories (~250KB). Fitment.gz (~75MB → ~900MB inflate)
+    // must NOT block first paint; phones OOM or hang forever on that await.
     try {
-      await loadLightData(bust);
+      await loadSparesCategories(bust);
       state.lightReady = true;
+      if (loadingWatchdog) clearTimeout(loadingWatchdog);
       window.__AA_NOFREEZE__?.heal?.();
-    } catch {
-      state.lightReady = true;
+    } catch (err) {
+      console.warn("aa spares-categories load failed", err);
+      state.lightReady = false;
+      if (loadingWatchdog) clearTimeout(loadingWatchdog);
+      if (onSpaRoute && isSparesPath(location.pathname)) {
+        showRouteError(t("sparesLoadError"));
+        // Still wire shell chrome below, but do not call render() into an empty hub.
+      } else {
+        state.lightReady = true;
+      }
     }
 
     window.__AA_CATALOG__ = state.catalog;
@@ -2415,81 +2527,98 @@
     wireVehicleSelects();
     updateCartBadge();
 
-    // Intercept internal navigation for SPA feel on app shell pages
-    document.addEventListener("click", (e) => {
-      const changeBtn = e.target.closest("[data-aa-change-vehicle]");
-      if (changeBtn) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        openChangeVehicleModal();
-        return;
-      }
-
-      const a = e.target.closest("a[href]");
-      if (!a) return;
-      const href = a.getAttribute("href");
-      if (!href || href.startsWith("mailto:") || href.startsWith("tel:")) return;
-      if (/^https?:\/\/(wa\.me|api\.whatsapp\.com)\//i.test(href)) return;
-
-      // Change vehicle: open modal overlay (never blank main / home soft-nav)
-      const isChangeVehicle =
-        href === "/#find-parts" ||
-        href === "#find-parts" ||
-        href === "#change-vehicle" ||
-        /\bchangeVehicle=1\b/.test(href) ||
-        (href.startsWith("/#") && /find-parts|change-vehicle/i.test(href));
-      if (isChangeVehicle) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        openChangeVehicleModal();
-        return;
-      }
-
-      if (href.startsWith("#")) return;
-
-      // Always leave cart drawer when going to cart/checkout pages
-      if (/^\/checkout(\/|$)|^\/cart\/?$/.test(href) || href.includes("/checkout/cart")) {
-        window.__AA_CART__?.close?.();
-      }
-      if (href.startsWith("http") && !href.includes(location.host) && !href.startsWith("https://aateile-clone.netlify.app")) {
-        if (href.startsWith("https://aateile.com")) {
+    if (!state._navWired) {
+      state._navWired = true;
+      // Intercept internal navigation for SPA feel on app shell pages
+      document.addEventListener("click", (e) => {
+        const retryBtn = e.target.closest("[data-aa-retry-boot]");
+        if (retryBtn) {
           e.preventDefault();
-          const u = new URL(href);
-          navigateTo(u.pathname + u.search);
+          retrySparesBoot();
+          return;
         }
-        return;
-      }
-      let url;
-      try {
-        url = new URL(href, location.origin);
-      } catch {
-        return;
-      }
-      if (url.origin !== location.origin) return;
-      if (/\.(css|js|png|jpe?g|webp|svg|ico|json|woff2?)$/i.test(url.pathname)) return;
-      // Soft SPA to "/" on a document that is not index.html → blank. Force hard home.
-      if (isHomePath(url.pathname) && !document.querySelector(".find-parts, [data-aa-home-block]")) {
+
+        const changeBtn = e.target.closest("[data-aa-change-vehicle]");
+        if (changeBtn) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          openChangeVehicleModal();
+          return;
+        }
+
+        const a = e.target.closest("a[href]");
+        if (!a) return;
+        const href = a.getAttribute("href");
+        if (!href || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+        if (/^https?:\/\/(wa\.me|api\.whatsapp\.com)\//i.test(href)) return;
+
+        // Change vehicle: open modal overlay (never blank main / home soft-nav)
+        const isChangeVehicle =
+          href === "/#find-parts" ||
+          href === "#find-parts" ||
+          href === "#change-vehicle" ||
+          /\bchangeVehicle=1\b/.test(href) ||
+          (href.startsWith("/#") && /find-parts|change-vehicle/i.test(href));
+        if (isChangeVehicle) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          openChangeVehicleModal();
+          return;
+        }
+
+        if (href.startsWith("#")) return;
+
+        // Always leave cart drawer when going to cart/checkout pages
+        if (/^\/checkout(\/|$)|^\/cart\/?$/.test(href) || href.includes("/checkout/cart")) {
+          window.__AA_CART__?.close?.();
+        }
+        if (
+          href.startsWith("http") &&
+          !href.includes(location.host) &&
+          !href.startsWith("https://aateile-clone.netlify.app")
+        ) {
+          if (href.startsWith("https://aateile.com")) {
+            e.preventDefault();
+            const u = new URL(href);
+            navigateTo(u.pathname + u.search);
+          }
+          return;
+        }
+        let url;
+        try {
+          url = new URL(href, location.origin);
+        } catch {
+          return;
+        }
+        if (url.origin !== location.origin) return;
+        if (/\.(css|js|png|jpe?g|webp|svg|ico|json|woff2?)$/i.test(url.pathname)) return;
+        // Soft SPA to "/" on a document that is not index.html → blank. Force hard home.
+        if (isHomePath(url.pathname) && !document.querySelector(".find-parts, [data-aa-home-block]")) {
+          e.preventDefault();
+          window.__AA_NOFREEZE__?.heal?.();
+          location.assign(url.pathname + url.search + (url.hash || ""));
+          return;
+        }
         e.preventDefault();
-        window.__AA_NOFREEZE__?.heal?.();
-        location.assign(url.pathname + url.search + (url.hash || ""));
-        return;
-      }
-      e.preventDefault();
-      navigateTo(url.pathname + url.search + url.hash);
-    });
-    window.addEventListener("popstate", render);
-    window.addEventListener("aa:cart-changed", () => {
-      syncCartFromStorage();
-    });
-    window.addEventListener("aa:lang-changed", () => {
+        navigateTo(url.pathname + url.search + url.hash);
+      });
+      window.addEventListener("popstate", render);
+      window.addEventListener("aa:cart-changed", () => {
+        syncCartFromStorage();
+      });
+      window.addEventListener("aa:lang-changed", () => {
+        render();
+        window.__AA_I18N__?.applyShell?.();
+      });
+    }
+
+    // First paint with light data only (spares-categories). Never wait for fitment/catalog gz.
+    if (state.lightReady) {
       render();
-      window.__AA_I18N__?.applyShell?.();
-    });
+    }
 
-    // First paint with light data (/spares works without 16MB catalog.json)
-    render();
-
-    // Heavy catalog for product listings / PDP — does not block Find parts UI
+    // Background heavy data after first paint
+    loadFitmentBackground(bust);
     loadCatalogHeavy(bust).then((ok) => {
       state.catalogReady = !!ok;
       window.__AA_CATALOG__ = state.catalog;
@@ -2501,6 +2630,7 @@
           path === "/search" ||
           path === "/checkout/cart" ||
           path === "/cart" ||
+          isSparesPath(path) ||
           isProductPdp)
       ) {
         render();
