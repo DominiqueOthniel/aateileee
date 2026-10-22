@@ -122,7 +122,7 @@ def save_state(state: dict):
 
 
 def all_catalog_paths() -> list[str]:
-    cat = json.loads(CATALOG.read_text(encoding="utf-8"))
+    cat = load_json_file(CATALOG)
     paths = []
     seen = set()
     for c in cat.get("categories") or []:
@@ -362,10 +362,16 @@ def merge_fitment_entry(fit: dict, data: dict):
     }
 
 
+def load_json_file(path: Path) -> dict:
+    """Load JSON without an extra full-string copy (read_text + loads)."""
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def write_fitment(fit: dict):
-    FITMENT_OUT.write_text(
-        json.dumps(fit, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
-    )
+    # Stream write to avoid holding dumps() string + file buffer peak twice.
+    with FITMENT_OUT.open("w", encoding="utf-8") as f:
+        json.dump(fit, f, ensure_ascii=False, separators=(",", ":"))
 
 
 def checkpoint_catalog(fit: dict, details_batch: dict[str, list], meta_extra: dict):
@@ -458,10 +464,11 @@ def run_wave(
         log(f"Wave A targets={len(targets)} cats={len(categories)} workers={workers}")
     else:
         categories = all_catalog_paths()
-        # Wave B: expand categories for engines already present in fitment
+        # Wave B: expand categories for engines already present in fitment.
+        # Load fitment ONCE (was loaded twice before → OOM on ~900MB+ file).
+        fit = load_json_file(FITMENT_OUT) if FITMENT_OUT.exists() else {}
         targets = []
-        fit0 = json.loads(FITMENT_OUT.read_text(encoding="utf-8")) if FITMENT_OUT.exists() else {}
-        for eid, e in fit0.items():
+        for eid, e in fit.items():
             if not isinstance(e, dict) or e.get("aggregated") or e.get("engineName") == "any":
                 continue
             if not e.get("engineId"):
@@ -507,9 +514,9 @@ def run_wave(
         pending = pending[:max_engines]
     log(f"Pending {len(pending)} (already done {skipped}, total targets {len(targets)})")
 
-    fit = {}
-    if FITMENT_OUT.exists():
-        fit = json.loads(FITMENT_OUT.read_text(encoding="utf-8"))
+    # Wave A still needs a fitment dict; Wave B already loaded it above.
+    if wave == "A":
+        fit = load_json_file(FITMENT_OUT) if FITMENT_OUT.exists() else {}
 
     details_batch: dict[str, list] = {}
     completed = 0
