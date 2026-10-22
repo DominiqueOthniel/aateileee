@@ -1369,11 +1369,12 @@
       await loadSparesCategories(bust);
       state.lightReady = true;
       render();
-      loadFitmentBackground(bust);
-      loadCatalogHeavy(bust).then((ok) => {
-        state.catalogReady = !!ok;
-        if (ok) render();
-      });
+      if (wantsHeavyCatalog(location.pathname)) {
+        loadCatalogHeavy(bust).then((ok) => {
+          state.catalogReady = !!ok;
+          if (ok) render();
+        });
+      }
     } catch (err) {
       console.warn("aa spares retry failed", err);
       showRouteError(t("sparesLoadError"));
@@ -2360,9 +2361,13 @@
              <button type="button" class="aa-btn" style="width:auto" data-aa-change-vehicle>${esc(t("changeVehicle"))}</button></div>`;
         bind(root);
         wireVehicleSelects();
-      } catch (_) {
-        /* last resort: hard reload to /spares keeps query */
-        if (isSparesPath(path)) location.reload();
+      } catch (err2) {
+        console.warn("aa render fallback failed", err2);
+        try {
+          showRouteError(t("sparesLoadError"));
+        } catch (_) {
+          /* give up without reload loops */
+        }
       }
     }
   }
@@ -2404,31 +2409,25 @@
     return spares;
   }
 
-  /** Background: large gzip fitment. Must not block /spares first paint. */
-  function loadFitmentBackground(bust) {
-    if (state.fitmentLoading || state.catalog?.fitment) return;
-    state.fitmentLoading = true;
-    loadJson(`/data/fitment.json.gz?${bust}`)
-      .then((fit) => {
-        state.catalog = state.catalog || {};
-        state.catalog.fitment = fit;
-        state.fitmentReady = true;
-        const path = location.pathname.replace(/\/+$/, "") || "/";
-        if (isSparesPath(path) || path === "/find-parts") {
-          try {
-            render();
-          } catch (_) {
-            /* ignore */
-          }
-        }
-      })
-      .catch((err) => {
-        console.warn("aa fitment load failed", err);
-        state.fitmentReady = false;
-      })
-      .finally(() => {
-        state.fitmentLoading = false;
-      });
+  /**
+   * Full fitment.json.gz inflates to ~900MB+ in memory and OOMs mobile Chrome
+   * (Aw Snap / error code 5). Do NOT auto-fetch it on SPA boot.
+   * Vehicle category grids use spares-categories only; product filtering can
+   * opt in later via a split/per-vehicle index.
+   */
+  function loadFitmentBackground(_bust) {
+    state.fitmentReady = false;
+    state.fitmentLoading = false;
+    /* intentionally no-op until fitment is split for the browser */
+  }
+
+  function wantsHeavyCatalog(pathname) {
+    const path = (pathname || "").replace(/\/+$/, "") || "/";
+    if (isSparesPath(path) || path === "/find-parts") return false;
+    if (path.startsWith("/car-parts") || path === "/search") return true;
+    if (path === "/checkout/cart" || path === "/cart") return true;
+    if (/^\/[A-Za-z0-9._%-]+\/[A-Za-z0-9._%-]+$/.test(path)) return true;
+    return false;
   }
 
   async function loadCatalogHeavy(bust) {
@@ -2617,28 +2616,23 @@
       render();
     }
 
-    // Background heavy data after first paint
-    loadFitmentBackground(bust);
-    loadCatalogHeavy(bust).then((ok) => {
-      state.catalogReady = !!ok;
-      window.__AA_CATALOG__ = state.catalog;
-      const path = location.pathname.replace(/\/+$/, "") || "/";
-      const isProductPdp = /^\/[A-Za-z0-9._%-]+\/[A-Za-z0-9._%-]+$/.test(path);
-      if (
-        ok &&
-        (path.startsWith("/car-parts") ||
-          path === "/search" ||
-          path === "/checkout/cart" ||
-          path === "/cart" ||
-          isSparesPath(path) ||
-          isProductPdp)
-      ) {
-        render();
-      } else if (ok) {
-        syncCartFromStorage();
-        updateCartBadge();
-      }
-    });
+    // Heavy gz files inflate to hundreds of MB; only fetch when the route needs products.
+    // Never pull fitment.json.gz into the browser tab (OOM). Catalog only on product routes.
+    const pathNow = location.pathname.replace(/\/+$/, "") || "/";
+    if (wantsHeavyCatalog(pathNow)) {
+      loadCatalogHeavy(bust).then((ok) => {
+        state.catalogReady = !!ok;
+        window.__AA_CATALOG__ = state.catalog;
+        if (ok) {
+          render();
+        } else {
+          syncCartFromStorage();
+          updateCartBadge();
+        }
+      });
+    } else {
+      state.catalogReady = false;
+    }
   }
 
   if (document.readyState === "loading") {
