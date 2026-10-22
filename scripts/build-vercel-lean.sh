@@ -6,6 +6,10 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PUB="${1:-/tmp/aa-vercel-lean}"
+# Ensure browser shop catalog exists for lean publish
+if [ -f "$ROOT/scripts/build-shop-catalog.py" ]; then
+  (cd "$ROOT" && python3 scripts/build-shop-catalog.py)
+fi
 python3 - "$ROOT" "$PUB" <<'PY'
 import json, re, shutil, sys
 from pathlib import Path
@@ -56,7 +60,7 @@ for item in ROOT.iterdir():
                 if src.exists():
                     shutil.copy2(src, STATIC / "data" / f)
             # Prefer repo gzip snapshots (Blob Hobby cannot hold 1.3GB JSON)
-            for f in ("catalog.json.gz", "fitment.json.gz"):
+            for f in ("catalog.json.gz", "fitment.json.gz", "shop-catalog.json.gz"):
                 for cand in (
                     item / f,
                     ROOT / "data" / f,
@@ -149,6 +153,8 @@ for rel in sorted(paths):
 vj = json.loads((PUB / "vercel.json").read_text(encoding="utf-8"))
 vj["outputDirectory"] = "public"
 vj["buildCommand"] = "echo Lean public tree ready"
+# CLI publish already contains public/; skip long Git LFS installCommand (Vercel API max 256 chars).
+vj["installCommand"] = "npm install"
 (PUB / "vercel.json").write_text(json.dumps(vj, indent=2) + "\n", encoding="utf-8")
 
 src_v = ROOT / ".vercel/project.json"

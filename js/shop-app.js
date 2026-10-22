@@ -271,8 +271,20 @@
   }
 
   function productsForCategory(path) {
+    const catalog = state.catalog || {};
+    const products = catalog.products || [];
+    // Prefer compact byCategory index from shop-catalog.json.gz (no per-product categories[]).
+    const indexed = catalog.byCategory && catalog.byCategory[path];
+    if (Array.isArray(indexed) && indexed.length) {
+      const out = [];
+      for (const i of indexed) {
+        const p = products[i];
+        if (p) out.push(p);
+      }
+      return out;
+    }
     // Exact category association only — never fuzzy name dumps
-    return (state.catalog?.products || []).filter((p) => productInCategory(p, path));
+    return products.filter((p) => productInCategory(p, path));
   }
 
   function cartCount() {
@@ -531,6 +543,13 @@
     const engine = params.get("engine") || "";
     let items = productsForCategory(path);
     let emptyHint = t("noPartsInCategory");
+    if (!items.length && !(state.catalog?.products?.length) && state.catalogLoading) {
+      return `<div class="aa-wrap">
+        <div class="aa-breadcrumb"><a href="/">${esc(t("home"))}</a> / <a href="/car-parts">${esc(t("carParts"))}</a> / ${esc(cat.name)}</div>
+        <h1 class="aa-h1">${esc(cat.name)}</h1>
+        <div class="aa-empty" data-aa-route-loading>${esc(t("vehicleLoading"))}</div>
+      </div>`;
+    }
     // Vehicle + category: prefer official vehicle-scoped listing (byCategory)
     // Engine "any" → union of all engines for the selected model
     if (engine || model) {
@@ -2424,16 +2443,21 @@
 
   function wantsHeavyCatalog(pathname) {
     const path = (pathname || "").replace(/\/+$/, "") || "/";
-    if (isSparesPath(path) || path === "/find-parts") return false;
+    // Shop catalog is lean (~4–6MB gz). Load on spares hub + category/product routes
+    // so Find Parts → category browse shows purchasable items (not an empty shell).
+    if (isSparesPath(path) || path === "/find-parts" || path === "/spare-parts" || path === "/pieces") return true;
     if (path.startsWith("/car-parts") || path === "/search") return true;
-    if (path === "/checkout/cart" || path === "/cart") return true;
+    if (path === "/checkout/cart" || path === "/cart" || path === "/wishlist") return true;
+    if (path === "/checkout" || path.startsWith("/checkout/")) return true;
     if (/^\/[A-Za-z0-9._%-]+\/[A-Za-z0-9._%-]+$/.test(path)) return true;
     return false;
   }
 
   async function loadCatalogHeavy(bust) {
     try {
-      const catalog = await loadJson(`/data/catalog.json.gz?${bust}`);
+      // Browser-safe catalog (no embedded fitment). Full catalog.json.gz OOMs tabs (~600MB inflate).
+      const catalog = await loadJson(`/data/shop-catalog.json.gz?${bust}`, { timeoutMs: 120000 });
+      if (!catalog?.products?.length) throw new Error("shop_catalog_empty");
       const fitment = state.catalog?.fitment;
       const spares = state.sparesCategories || state.catalog?.sparesCategories;
       state.catalog = catalog;
@@ -2445,7 +2469,7 @@
       window.__AA_CATALOG__ = state.catalog;
       return true;
     } catch (err) {
-      console.warn("aa catalog load failed", err);
+      console.warn("aa shop-catalog load failed", err);
       return false;
     }
   }
@@ -2464,7 +2488,7 @@
         state.catalogReady = !!ok;
         state.catalogLoading = false;
         window.__AA_CATALOG__ = state.catalog;
-        if (ok && wantsHeavyCatalog(location.pathname)) render();
+        if (ok) render();
       })
       .catch(() => {
         state.catalogLoading = false;
@@ -2639,18 +2663,21 @@
       render();
     }
 
-    // Heavy gz files inflate to hundreds of MB; only fetch when the route needs products.
-    // Never pull fitment.json.gz into the browser tab (OOM). Catalog only on product routes.
+    // Shop-catalog.json.gz is lean (~8MB). Load on product/spares routes so category
+    // pages show priced items. Never pull fitment.json.gz into the tab (OOM).
     const pathNow = location.pathname.replace(/\/+$/, "") || "/";
     if (wantsHeavyCatalog(pathNow)) {
+      state.catalogLoading = true;
       loadCatalogHeavy(bust).then((ok) => {
         state.catalogReady = !!ok;
+        state.catalogLoading = false;
         window.__AA_CATALOG__ = state.catalog;
         if (ok) {
           render();
         } else {
           syncCartFromStorage();
           updateCartBadge();
+          render();
         }
       });
     } else {

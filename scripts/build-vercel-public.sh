@@ -114,7 +114,19 @@ for f in data/fitment.json.gz data/catalog.json.gz; do
   echo "SOURCE_OK $f ($sz bytes)"
 done
 
+# Browser-safe catalog (required for purchasable UI; full catalog.json.gz OOMs tabs).
+if [ -f scripts/build-shop-catalog.py ]; then
+  python3 scripts/build-shop-catalog.py
+fi
+if [ ! -f data/shop-catalog.json.gz ] || [ "$(wc -c < data/shop-catalog.json.gz)" -lt "$MIN_GZ_BYTES" ]; then
+  echo "ERROR: data/shop-catalog.json.gz missing or too small after build-shop-catalog.py" >&2
+  ls -la data/shop-catalog.json.gz 2>&1 || true
+  exit 1
+fi
+echo "SOURCE_OK data/shop-catalog.json.gz ($(wc -c < data/shop-catalog.json.gz) bytes)"
+
 python3 - "$ROOT" <<'PY'
+
 import json, re, shutil, sys
 from pathlib import Path
 from urllib.parse import unquote
@@ -163,7 +175,7 @@ for item in ROOT.iterdir():
                 src = item / f
                 if src.exists():
                     shutil.copy2(src, STATIC / "data" / f)
-            for f in ("catalog.json.gz", "fitment.json.gz"):
+            for f in ("catalog.json.gz", "fitment.json.gz", "shop-catalog.json.gz"):
                 copied = False
                 for cand in (
                     item / f,
@@ -247,7 +259,7 @@ for rel in sorted(paths):
     shutil.copy2(src, dst)
     copied += 1
 
-for f in ("fitment.json.gz", "catalog.json.gz"):
+for f in ("fitment.json.gz", "catalog.json.gz", "shop-catalog.json.gz"):
     p = STATIC / "data" / f
     if not p.is_file() or p.stat().st_size < MIN_GZ:
         raise SystemExit(f"ERROR: public/data/{f} missing or too small after build")

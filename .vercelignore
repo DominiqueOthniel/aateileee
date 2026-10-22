@@ -17,3 +17,4 @@ scripts/__pycache__
 netlify/
 .netlifyignore
 netlify.toml
+data/shop-catalog.json
