@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "echo Static shop clone ready",
+  "buildCommand": "bash scripts/build-vercel-public.sh",
+  "outputDirectory": "public",
   "headers": [
     {
       "source": "/data/(.*).json",

@@ -145,10 +145,10 @@ for rel in sorted(paths):
     shutil.copy2(src, dst)
     copied += 1
 
-# Force outputDirectory public in published vercel.json
+# CLI publish tree already contains public/; do not re-run Git buildCommand.
 vj = json.loads((PUB / "vercel.json").read_text(encoding="utf-8"))
 vj["outputDirectory"] = "public"
-# Keep build trivial; serverless api/ stays at project root beside public/
+vj["buildCommand"] = "echo Lean public tree ready"
 (PUB / "vercel.json").write_text(json.dumps(vj, indent=2) + "\n", encoding="utf-8")
 
 src_v = ROOT / ".vercel/project.json"
