@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>AATEILE Monitor</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+<style id="aa-kill-netlify">iframe[src*="netlify"],#netlify-badge,.netlify-badge,[data-netlify-badge]{display:none!important}</style>
+<script src="/js/strip-netlify-chrome.js" defer></script>
+</head>
+<body>
+  <div id="login-view" class="gate hidden">
+    <form id="login-form" class="gate-card" autocomplete="on">
+      <h1>Site monitor</h1>
+      <p class="muted">Protected admin for aateile-clone activity.</p>
+      <label>
+        Password
+        <input id="password" name="password" type="password" required autocomplete="current-password">
+      </label>
+      <button type="submit">Enter</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </div>
+
+  <div id="dash-view" class="dash hidden">
+    <header class="top">
+      <div>
+        <h1>Activity dashboard</h1>
+        <p class="muted" id="updated">Loading…</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" id="refresh" class="ghost">Refresh</button>
+        <button type="button" id="logout" class="ghost">Log out</button>
+      </div>
+    </header>
+
+    <section class="cards" id="cards"></section>
+
+    <section class="panel">
+      <h2>Settings</h2>
+      <p class="muted">WhatsApp stays fixed at <strong id="wa-fixed">+33 6 44 68 49 20</strong> (not editable here). You can change the contact email and your admin password.</p>
+
+      <form id="email-form" class="settings-form">
+        <h3 class="settings-sub">Contact email</h3>
+        <label>
+          Email
+          <input id="contact-email" name="email" type="email" required placeholder="aateilepieceauto1@gmail.com" autocomplete="email">
+        </label>
+        <div class="settings-actions">
+          <button type="submit">Save email</button>
+          <span id="email-status" class="muted" aria-live="polite"></span>
+        </div>
+        <p id="email-error" class="error" hidden></p>
+      </form>
+
+      <form id="password-form" class="settings-form" style="margin-top:18px">
+        <h3 class="settings-sub">Admin password</h3>
+        <label>
+          Current password
+          <input id="pw-current" name="currentPassword" type="password" required autocomplete="current-password">
+        </label>
+        <label>
+          New password
+          <input id="pw-new" name="newPassword" type="password" required minlength="10" autocomplete="new-password">
+        </label>
+        <label>
+          Confirm new password
+          <input id="pw-confirm" name="confirmPassword" type="password" required minlength="10" autocomplete="new-password">
+        </label>
+        <div class="settings-actions">
+          <button type="submit">Change password</button>
+          <span id="password-status" class="muted" aria-live="polite"></span>
+        </div>
+        <p id="password-error" class="error" hidden></p>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Top pages</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Path</th><th>Views</th></tr></thead>
+          <tbody id="top-pages"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Recent events</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>When</th><th>Type</th><th>Path</th><th>Detail</th></tr></thead>
+          <tbody id="recent"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

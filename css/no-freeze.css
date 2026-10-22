@@ -1,0 +1,103 @@
+/* Permanent anti-freeze: never allow stuck overlays / scroll locks / splash */
+
+html.aa-nofreeze,
+body.aa-nofreeze {
+  pointer-events: auto !important;
+}
+
+/* When no intentional drawer/menu is open, body MUST scroll */
+html.aa-nofreeze:not(.aa-scroll-locked),
+body.aa-nofreeze:not(.aa-cart-open):not(.aa-mnav-open):not(.aa-scroll-locked) {
+  overflow: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 0 !important;
+  position: static !important;
+  height: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Intentional locks only via our classes */
+body.aa-cart-open,
+body.aa-mnav-open,
+body.aa-scroll-locked {
+  overflow: hidden !important;
+}
+
+/* Kill Shopware splash / loaders + Netlify built-with badge (always, not only aa-nofreeze) */
+#preloader,
+#preloader.preloader_visible,
+.preloader,
+.loaderImage,
+.page-loader,
+.ajax-loader,
+.sw-loader,
+.is-loading > .loader,
+iframe[src*="netlify"],
+iframe[src*="identity.netlify"],
+a[href*="netlify.com"][href*="built"],
+a[href*="www.netlify.com/?utm"],
+#netlify-badge,
+.netlify-badge,
+[data-netlify-badge],
+[data-nf-badge] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  z-index: -1 !important;
+}
+
+/* Kill Shopware / Bootstrap freeze layers forever */
+body.aa-nofreeze #preloader,
+body.aa-nofreeze #preloader.preloader_visible,
+body.aa-nofreeze .loaderImage,
+body.aa-nofreeze .page-loader,
+body.aa-nofreeze .ajax-loader,
+body.aa-nofreeze .sw-loader,
+body.aa-nofreeze .is-loading > .loader,
+body.aa-nofreeze .modal-backdrop,
+body.aa-nofreeze .offcanvas-backdrop,
+body.aa-nofreeze .search_popup_backdrop,
+body.aa-nofreeze .model_backdrop,
+body.aa-nofreeze .offcanvas.show:not(#aa-cookie-config):not(.aa-keep),
+body.aa-nofreeze .offcanvas.showing:not(#aa-cookie-config):not(.aa-keep) {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  z-index: -1 !important;
+}
+
+/* Invisible full-screen blockers (common freeze cause) */
+body.aa-nofreeze .aa-freeze-blocker,
+body.aa-nofreeze [data-aa-freeze-blocker] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Closed cart/nav must never capture clicks.
+   Keep #aa-cart-root as display:block so translateX can animate. */
+#aa-cart-root:not(.is-open),
+.aa-mnav-root:not(.is-open),
+#aa-mobile-nav:not(.is-open) {
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+#aa-cart-root.is-open,
+.aa-mnav-root.is-open,
+#aa-mobile-nav.is-open {
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+.aa-mnav-root.is-open,
+#aa-mobile-nav.is-open {
+  display: block !important;
+}
