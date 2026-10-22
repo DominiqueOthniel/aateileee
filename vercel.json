@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "npm install && (curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash && sudo apt-get install -y git-lfs || true) && git lfs install && git lfs pull --include='data/*.json.gz' || true",
   "buildCommand": "bash scripts/build-vercel-public.sh",
   "outputDirectory": "public",
   "headers": [

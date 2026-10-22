@@ -3,6 +3,22 @@
 # (api/ stays at repo root for serverless). Safe to run in-checkout.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+# Vercel Git clones often leave LFS pointers; materialize real gz/json before copy.
+if command -v git >/dev/null 2>&1 && [ -d .git ]; then
+  if command -v git-lfs >/dev/null 2>&1 || git lfs version >/dev/null 2>&1; then
+    git lfs install --local >/dev/null 2>&1 || true
+    git lfs pull --include="data/*.json.gz,data/fitment.json,data/catalog.json" || git lfs pull || true
+  fi
+fi
+for f in data/fitment.json.gz data/catalog.json.gz; do
+  if [ -f "$f" ] && [ "$(wc -c < "$f")" -lt 1000 ]; then
+    echo "ERROR: $f looks like a Git LFS pointer ($(wc -c < "$f") bytes). git lfs pull required." >&2
+    head -c 120 "$f" >&2 || true
+    echo >&2
+    exit 1
+  fi
+done
 python3 - "$ROOT" <<'PY'
 import json, re, shutil, sys
 from pathlib import Path
