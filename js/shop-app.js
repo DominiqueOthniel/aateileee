@@ -16,6 +16,7 @@
     account: loadAccount(),
     lightReady: false,
     catalogReady: false,
+    catalogLoading: false,
     fitmentReady: false,
     fitmentLoading: false,
     sparesCategories: null,
@@ -2449,6 +2450,27 @@
     }
   }
 
+  function ensureCatalogForRoute(pathname) {
+    if (!wantsHeavyCatalog(pathname)) return;
+    if (state.catalogReady || state.catalogLoading) return;
+    if (state.catalog?.products?.length) {
+      state.catalogReady = true;
+      return;
+    }
+    state.catalogLoading = true;
+    const bust = `v=${encodeURIComponent(window.__AA_BUILD__ || Date.now().toString(36))}`;
+    loadCatalogHeavy(bust)
+      .then((ok) => {
+        state.catalogReady = !!ok;
+        state.catalogLoading = false;
+        window.__AA_CATALOG__ = state.catalog;
+        if (ok && wantsHeavyCatalog(location.pathname)) render();
+      })
+      .catch(() => {
+        state.catalogLoading = false;
+      });
+  }
+
   function navigateTo(path) {
     const url = new URL(path, location.origin);
     if (/\bchangeVehicle=1\b/.test(url.search) || /#(find-parts|change-vehicle)/i.test(url.hash)) {
@@ -2466,6 +2488,7 @@
       showRouteLoading(t("vehicleLoading"));
       return;
     }
+    ensureCatalogForRoute(url.pathname);
     render();
     window.scrollTo(0, 0);
     window.__AA_NOFREEZE__?.heal?.();
